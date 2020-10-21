@@ -1085,6 +1085,7 @@ struct dwc2_hsotg {
 	int     irq;
 	struct clk *clk;
 	struct clk *utmi_clk;
+	struct clk *core_clk;
 	struct reset_control *reset;
 	struct reset_control *reset_ecc;
 	struct reset_control *reset_sync;
