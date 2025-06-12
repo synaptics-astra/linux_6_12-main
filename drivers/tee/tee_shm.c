@@ -244,7 +244,6 @@ struct tee_shm *tee_shm_register_fd(struct tee_context *ctx, int fd)
 	ref->shm.paddr = page_to_phys(sg_page(ref->sgt->sgl));
 	ref->shm.size = ref->sgt->sgl->length;
 
-out:
 	mutex_lock(&ref->shm.ctx->teedev->mutex);
 	ref->shm.id = idr_alloc(&ref->shm.ctx->teedev->idr, &ref->shm,
 				1, 0, GFP_KERNEL);
