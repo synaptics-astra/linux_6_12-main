@@ -561,3 +561,11 @@
 &csi {
 	status = "okay";
 };
+
+&smmu {
+	status = "okay";
+};
+
+&synpu {
+	status = "okay";
+};
