@@ -364,6 +364,39 @@
 			status = "disabled";
 		};
 
+		avio: avio {
+			compatible = "syna,berlin-avio";
+			#address-cells = <1>;
+			#size-cells = <1>;
+			reg = <0xf7400000 0x200000>;
+			ranges = <0 0xf7400000 0x200000>;
+			status = "disabled";
+
+			aio {
+				compatible = "syna,berlin-aio";
+				reg = <0x94C00 0x400>, <0x90000 0x4000>;
+				reg-names = "aio_base", "gbl_base";
+				clocks = <&apll0 0>, <&apll1 0>, <&clk CLK_AIOSYS>;
+				clock-names = "audio0_clk", "audio1_clk", "aio_sysclk";
+				clock-rates = <294912000 270950400 0>;
+			};
+
+			dhub {
+				compatible = "syna,berlin-dhub";
+				frame-rate = <60>;
+				interrupts = <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
+				interrupt-names = "vpp_dhub";
+			};
+		};
+
+		dhubctr_a: interrupt-controller@f7480000 {
+			compatible = "syna,klamath-dhub-irq";
+			interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0xf7484000 0x1500>;
+            interrupt-controller;
+            #interrupt-cells = <1>;
+        };
+
 		sdhci0: sdhci@f7a00000 {
 			compatible = "snps,dwcmshc-sdhci";
 			reg = <0xf7a00000 0x1000>;
@@ -753,6 +786,40 @@
 			interrupts = <GIC_SPI 201 IRQ_TYPE_LEVEL_HIGH>;
 			dmas = <&pdma0 18>, <&pdma0 19>;
 			dma-names = "rx", "tx";
+			status = "disabled";
+		};
+
+		i2s1_dai: i2s1-soc-dai {
+			compatible = "syna,klamath-i2s-soc";
+			interrupt-parent = <&dhubctr_a>;
+			interrupts = <0>, <1>, <22>;
+			interrupt-names = "tx", "rx", "status";
+			status = "disabled";
+		};
+
+		i2s2_dai: i2s2-soc-dai {
+			compatible = "syna,klamath-i2s-soc";
+			interrupt-parent = <&dhubctr_a>;
+			interrupts = <2>, <3>, <22>;
+			interrupt-names = "tx", "rx", "status";
+			status = "disabled";
+		};
+
+		i2s3_dai: i2s3-soc-dai {
+			compatible = "syna,klamath-i2s-soc";
+			interrupt-parent = <&dhubctr_a>;
+			interrupts = <4>, <5>, <22>;
+			interrupt-names = "tx", "rx", "status";
+			status = "disabled";
+		};
+
+		klamath_pcm: klamath-pcm {
+			compatible = "syna,klamath-pcm";
+			status = "disabled";
+		};
+
+		klamath_asoc: klamath-asoc {
+			compatible = "syna,klamath-asoc";
 			status = "disabled";
 		};
 
