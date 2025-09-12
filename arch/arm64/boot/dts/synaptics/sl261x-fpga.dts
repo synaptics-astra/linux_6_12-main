@@ -18,7 +18,7 @@
 	chosen {
 		bootargs = "maxcpus=1 earlycon";
 		stdout-path = "serial0:57600n8";
-		linux,initrd-start = <0x08000000>;
+		linux,initrd-start = < 0x08000000>;
 		linux,initrd-end = <0x0805a9ec>;
 	};
 
@@ -254,4 +254,16 @@
 		codec-dai-name = "snd-soc-dummy-dai";
 		platform-node = <&klamath_pcm>;
 	};
+};
+
+&camera_video {
+	status = "okay";
+};
+
+&isp {
+	status = "okay";
+};
+
+&csi {
+	status = "okay";
 };
