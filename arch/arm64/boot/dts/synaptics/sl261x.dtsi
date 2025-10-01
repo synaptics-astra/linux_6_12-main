@@ -1108,7 +1108,7 @@
 					reg = <2>;
 					#address-cells = <1>;
 					#size-cells = <0>;
-					isp_video_out_ep1: endpoint@1 {
+					isp_video_out_ep1: endpoint@0 {
 						reg = <0>;
 						remote-endpoint = <&video_ep1>;
 					};
