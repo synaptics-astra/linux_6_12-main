@@ -454,14 +454,14 @@
 
 			white-balance-config {
 				wb-mode = <1>;
-				wb-p00-mantissa = <32>;
+				wb-p00-mantissa = <48>;
 				wb-p00-exponent = <1>;
-				wb-p01-mantissa = <32>;
-				wb-p01-exponent = <1>;
-				wb-p10-mantissa = <32>;
-				wb-p10-exponent = <1>;
-				wb-p11-mantissa = <32>;
-				wb-p11-exponent = <1>;
+				wb-p01-mantissa = <54>;
+				wb-p01-exponent = <0>;
+				wb-p10-mantissa = <54>;
+				wb-p10-exponent = <0>;
+				wb-p11-mantissa = <62>;
+				wb-p11-exponent = <0>;
 				input-sel = <32>;
 			};
 
