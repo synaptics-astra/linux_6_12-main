@@ -76,6 +76,7 @@
 				entry-latency-us = <75>;
 				exit-latency-us = <155>;
 				min-residency-us = <50000>;
+				status = "disabled";
 			};
 		};
 
