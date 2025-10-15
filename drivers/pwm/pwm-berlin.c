@@ -15,6 +15,7 @@
 #include <linux/kernel.h>
 #include <linux/mod_devicetable.h>
 #include <linux/module.h>
+#include <linux/of_device.h>
 #include <linux/platform_device.h>
 #include <linux/pwm.h>
 #include <linux/slab.h>
@@ -22,6 +23,8 @@
 #define BERLIN_PWM_EN			0x0
 #define  BERLIN_PWM_ENABLE		BIT(0)
 #define BERLIN_PWM_CONTROL		0x4
+#define  BERLIN_PWM_PRESCALE_MASK	0x7
+#define  BERLIN_PWM_PRESCALE_MAX	4096
 /*
  * The prescaler claims to support 8 different moduli, configured using the
  * low three bits of PWM_CONTROL. (Sequentially, they are 1, 4, 8, 16, 64,
@@ -51,7 +54,12 @@ struct berlin_pwm_channel {
 struct berlin_pwm_chip {
 	struct clk *clk;
 	void __iomem *base;
+	int (*config)(struct pwm_chip *chip, struct pwm_device *pwm, u64 duty_ns, u64 period_ns);
 	struct berlin_pwm_channel channel[BERLIN_PWM_NUMPWMS];
+};
+
+static const u32 prescaler_table[] = {
+       1, 4, 8, 16, 64, 256, 1024, 4096
 };
 
 static inline struct berlin_pwm_chip *to_berlin_pwm_chip(struct pwm_chip *chip)
@@ -110,6 +118,45 @@ static int berlin_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
 	return 0;
 }
 
+static int syna_berlin_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
+				  u64 duty_ns, u64 period_ns)
+{
+	struct berlin_pwm_chip *bpc = to_berlin_pwm_chip(chip);
+	unsigned int prescale;
+	u32 value, duty, period;
+	u64 cycles, tmp;
+
+	cycles = clk_get_rate(bpc->clk);
+	cycles *= period_ns;
+	do_div(cycles, NSEC_PER_SEC);
+
+	for (prescale = 0; prescale < ARRAY_SIZE(prescaler_table); prescale++) {
+		tmp = cycles;
+		do_div(tmp, prescaler_table[prescale]);
+
+		if (tmp <= BERLIN_PWM_MAX_TCNT)
+			break;
+	}
+
+	if (tmp > BERLIN_PWM_MAX_TCNT)
+		return -ERANGE;
+
+	period = tmp;
+	cycles = tmp * duty_ns;
+	do_div(cycles, period_ns);
+	duty = cycles;
+
+	value = berlin_pwm_readl(bpc, pwm->hwpwm, BERLIN_PWM_CONTROL);
+	value &= ~BERLIN_PWM_PRESCALE_MASK;
+	value |= prescale;
+	berlin_pwm_writel(bpc, pwm->hwpwm, value, BERLIN_PWM_CONTROL);
+
+	berlin_pwm_writel(bpc, pwm->hwpwm, duty, BERLIN_PWM_DUTY);
+	berlin_pwm_writel(bpc, pwm->hwpwm, period, BERLIN_PWM_TCNT);
+
+	return 0;
+}
+
 static int berlin_pwm_set_polarity(struct pwm_chip *chip,
 				   struct pwm_device *pwm,
 				   enum pwm_polarity polarity)
@@ -157,6 +204,7 @@ static int berlin_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
 {
 	int err;
 	bool enabled = pwm->state.enabled;
+	struct berlin_pwm_chip *bpc = to_berlin_pwm_chip(chip);
 
 	if (state->polarity != pwm->state.polarity) {
 		if (enabled) {
@@ -175,7 +223,7 @@ static int berlin_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
 		return 0;
 	}
 
-	err = berlin_pwm_config(chip, pwm, state->duty_cycle, state->period);
+	err = bpc->config(chip, pwm, state->duty_cycle, state->period);
 	if (err)
 		return err;
 
@@ -190,7 +238,14 @@ static const struct pwm_ops berlin_pwm_ops = {
 };
 
 static const struct of_device_id berlin_pwm_match[] = {
-	{ .compatible = "marvell,berlin-pwm" },
+	{
+		.compatible = "marvell,berlin-pwm",
+		.data = berlin_pwm_config,
+	},
+	{
+		.compatible = "syna,berlin-pwm",
+		.data = syna_berlin_pwm_config,
+	},
 	{ },
 };
 MODULE_DEVICE_TABLE(of, berlin_pwm_match);
@@ -213,6 +268,8 @@ static int berlin_pwm_probe(struct platform_device *pdev)
 	bpc->clk = devm_clk_get_enabled(&pdev->dev, NULL);
 	if (IS_ERR(bpc->clk))
 		return PTR_ERR(bpc->clk);
+
+	bpc->config = of_device_get_match_data(&pdev->dev);
 
 	chip->ops = &berlin_pwm_ops;
 
