@@ -882,9 +882,13 @@
 		stream-name = "soc-i2so1";
 		link-name = "soc-i2so1";
 		format = "i2s";
+		/* Note that bitclock-master & frame-master is no longer set,
+		 * as the assignment of clock producers & consumers has changed
+		 * in kernel 6.12. With the updated setting, the CPU DAI is
+		 * is still clock & frame producer and the codec clock & frame
+		 * consumer.
+		 */
 		continuous-clock;
-		bitclock-master;
-		frame-master;
 		bitclock-inversion;
 		frame-inversion;
 		cpu-node = <&i2s_pri>;
@@ -964,8 +968,6 @@
 		stream-name = "soc-hdmio";
 		link-name = "soc-hdmio";
 		format = "i2s";
-		bitclock-master;
-		frame-master;
 		cpu-node = <&hdmi_out>;
 		codec-name = "snd-soc-dummy";
 		codec-dai-name = "snd-soc-dummy-dai";
@@ -976,8 +978,6 @@
 		status = "okay";
 		stream-name = "soc-hdmii";
 		link-name = "soc-hdmii";
-		bitclock-master;
-		frame-master;
 		cpu-node = <&hdmi_in>;
 		codec-name = "snd-soc-dummy";
 		codec-dai-name = "snd-soc-dummy-dai";
