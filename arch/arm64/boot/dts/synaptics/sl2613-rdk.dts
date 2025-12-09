@@ -15,10 +15,6 @@
 	compatible = "syna,sl2613-rdk", "syna,sl2613";
 };
 
-&gpu {
-	status = "okay";
-};
-
 &smmu {
 	status = "okay";
 };
