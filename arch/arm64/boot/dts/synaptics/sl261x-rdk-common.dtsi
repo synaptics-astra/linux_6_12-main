@@ -190,6 +190,11 @@
 		groups = "SM_GPIO37";
 		function = "gpio";
 	};
+
+	pdm_pmux: pdm-pmux {
+		groups = "SM_GPIO32";
+		function = "pdm";
+	};
 };
 
 &ipc {
@@ -405,8 +410,11 @@
 
 &dmic {
 	status = "okay";
+	pinctrl-0 = <&pdm_pmux>;
+	pinctrl-names = "default";
 	pdm-type = <1>;
 	pdm-clk-sel = <1>;
+	dmic-mux-reg = <0xe5025800 24>;
 };
 
 &klamath_asoc {
