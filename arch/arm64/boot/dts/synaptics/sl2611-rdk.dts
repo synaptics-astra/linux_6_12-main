@@ -14,3 +14,7 @@
 	model = "Synaptics SL2611 RDK";
 	compatible = "syna,sl2611-rdk", "syna,sl2611";
 };
+
+&avio {
+	status = "okay";
+};
