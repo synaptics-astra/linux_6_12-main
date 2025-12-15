@@ -6,6 +6,7 @@
  */
 
 #include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/linux-event-codes.h>
 
 / {
 	cpus {
@@ -125,6 +126,29 @@
 		compatible = "syna,bluesleep";
 		bt-dev-wake-gpio = <&expander1 3 GPIO_ACTIVE_HIGH>;
 	};
+
+	gpio_keys {
+		compatible = "gpio-keys";
+		label = "gpio-keys";
+		pinctrl-names = "default";
+		pinctrl-0 = <&vol_key_pmux>;
+
+		vol_up {
+			label = "volume_up";
+			gpios = <&porta 29 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_VOLUMEUP>;
+			linux,can-disable;
+			debounce-interval = <15>;
+		};
+
+		vol_down {
+			label = "volume_down";
+			gpios = <&porta 30 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_VOLUMEDOWN>;
+			linux,can-disable;
+			debounce-interval = <15>;
+		};
+	};
 };
 
 &pinctrl {
@@ -153,6 +177,11 @@
 	i2s3_pmux: i2s3-pmux {
 		groups = "GPIO12", "GPIO13", "GPIO14", "GPIO15";
 		function = "i2s3";
+	};
+
+	vol_key_pmux: vol-key-pmux {
+		groups = "GPIO29", "GPIO30";
+		function = "gpio";
 	};
 };
 
