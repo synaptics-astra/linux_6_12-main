@@ -373,6 +373,10 @@
 	};
 };
 
+&axi_meter {
+	status = "okay";
+};
+
 &i2s1_dai {
 	status = "okay";
 	pinctrl-0 = <&i2s1_pmux>;

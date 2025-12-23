@@ -619,6 +619,12 @@
 			suspend-resume;
 		};
 
+		axi_meter: axi_meter@f7e50000 {
+			compatible = "syna,sl261x-axi-meter";
+			reg = <0xf7e50000 0x300>;
+			status = "disabled";
+		};
+
 		mempll: mempll@f7e50008 {
 			compatible = "syna,dolphin-pll";
 			reg = <0xf7e50008 0x20>, <0xf7e10400 0x4>;
