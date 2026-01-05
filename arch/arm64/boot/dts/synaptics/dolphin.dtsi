@@ -946,7 +946,7 @@
 		};
 
 		pwm0: pwm@f7f20000 {
-			compatible = "marvell,berlin-pwm";
+			compatible = "syna,berlin-pwm";
 			reg = <0xf7f20000 0x40>;
 			clocks = <&clk CLK_CFG>;
 			#pwm-cells = <3>;
