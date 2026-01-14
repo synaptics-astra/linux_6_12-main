@@ -350,6 +350,11 @@
 		groups = "SM_HDMIRX_HPD";
 		function = "gpio";
 	};
+
+	cec_pmux: cec-pmux {
+		groups = "SM_HDMI_CEC";
+		function = "hdmi";
+	};
 };
 
 &avio_pinctrl {
@@ -772,6 +777,9 @@
 };
 
 &cec {
+	pinctrl-0 = <&cec_pmux>;
+	pinctrl-names = "default";
+	hdmi-phandle = <&drm>;
 	status = "okay";
 };
 
