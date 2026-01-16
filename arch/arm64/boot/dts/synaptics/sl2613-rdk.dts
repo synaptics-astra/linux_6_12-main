@@ -9,6 +9,7 @@
 
 #include "sl2613.dtsi"
 #include "sl261x-rdk-common.dtsi"
+#include "sl261x-rtl8211f-dc.dtsi"
 
 / {
 	model = "Synaptics SL2613 RDK";
