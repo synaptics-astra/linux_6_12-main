@@ -476,6 +476,8 @@
 		stream-name = "asoc-i2s3";
 		link-name = "asoc-i2s3";
 		format = "i2s";
+		bitclock-master;
+		frame-master;
 		cpu-node = <&i2s3_dai>;
 		codec-name = "snd-soc-dummy";
 		codec-dai-name = "snd-soc-dummy-dai";
