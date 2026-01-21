@@ -395,6 +395,23 @@ out_reset:
 	return ret;
 }
 
+static int dw_spi_mmio_suspend(struct device *dev)
+{
+	struct dw_spi_mmio *dwsmmio = dev_get_drvdata(dev);
+
+	return dw_spi_suspend_host(&dwsmmio->dws);
+}
+
+static int dw_spi_mmio_resume(struct device *dev)
+{
+	struct dw_spi_mmio *dwsmmio = dev_get_drvdata(dev);
+
+	return dw_spi_resume_host(&dwsmmio->dws);
+}
+
+static DEFINE_SIMPLE_DEV_PM_OPS(dw_spi_mmio_pm_ops,
+				dw_spi_mmio_suspend, dw_spi_mmio_resume);
+
 static void dw_spi_mmio_remove(struct platform_device *pdev)
 {
 	struct dw_spi_mmio *dwsmmio = platform_get_drvdata(pdev);
@@ -438,6 +455,7 @@ static struct platform_driver dw_spi_mmio_driver = {
 		.name	= DRIVER_NAME,
 		.of_match_table = dw_spi_mmio_of_match,
 		.acpi_match_table = ACPI_PTR(dw_spi_mmio_acpi_match),
+		.pm	= pm_sleep_ptr(&dw_spi_mmio_pm_ops),
 	},
 };
 module_platform_driver(dw_spi_mmio_driver);
