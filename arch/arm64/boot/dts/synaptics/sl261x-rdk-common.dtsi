@@ -103,8 +103,8 @@
 			regulator-type = "voltage";
 			enable-active-high;
 			gpios = <&expander0 0 GPIO_ACTIVE_HIGH>;
-			states = <1800000 0x0
-				  3300000 0x1>;
+			states = <1800000 0x1
+				  3300000 0x0>;
 		};
 
 		reg_usb0_vbus: usb0_vbus {
