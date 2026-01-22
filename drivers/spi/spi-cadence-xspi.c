@@ -364,6 +364,7 @@ static const int cdns_mrvl_xspi_clk_div_list[] = {
 
 struct cdns_xspi_dev {
 	struct platform_device *pdev;
+	struct spi_controller *host;
 	struct device *dev;
 
 	void __iomem *iobase;
@@ -376,6 +377,7 @@ struct cdns_xspi_dev {
 	struct reset_control *srstn;
 
 	int irq;
+	int rd_dly;
 	int cur_cs;
 	unsigned int sdmasize;
 
@@ -1233,9 +1235,10 @@ static int cdns_xspi_probe(struct platform_device *pdev)
 	host->dev.of_node = pdev->dev.of_node;
 	host->bus_num = -1;
 
-	platform_set_drvdata(pdev, host);
+	platform_set_drvdata(pdev, cdns_xspi);
 
 	cdns_xspi->pdev = pdev;
+	cdns_xspi->host = host;
 	cdns_xspi->dev = &pdev->dev;
 	cdns_xspi->cur_cs = 0;
 
@@ -1321,6 +1324,7 @@ static int cdns_xspi_probe(struct platform_device *pdev)
 
 	cdns_xspi_sw_reset(cdns_xspi);
 
+	cdns_xspi->rd_dly = rd_dly;
 	cdns_xspi_phy_config(cdns_xspi, rd_dly);
 
 	if (cdns_xspi->driver_data->mrvl_hw_overlay) {
@@ -1349,6 +1353,47 @@ static int cdns_xspi_probe(struct platform_device *pdev)
 	return 0;
 }
 
+static int cdns_xspi_suspend(struct device *dev)
+{
+	struct cdns_xspi_dev *cdns_xspi = dev_get_drvdata(dev);
+	int ret;
+
+	ret = spi_controller_suspend(cdns_xspi->host);
+	if (ret)
+		return ret;
+
+	reset_control_assert(cdns_xspi->arstn);
+	reset_control_assert(cdns_xspi->prstn);
+	reset_control_assert(cdns_xspi->srstn);
+
+	return 0;
+}
+
+static int cdns_xspi_resume(struct device *dev)
+{
+	struct cdns_xspi_dev *cdns_xspi = dev_get_drvdata(dev);
+
+	reset_control_deassert(cdns_xspi->arstn);
+	reset_control_deassert(cdns_xspi->prstn);
+	reset_control_deassert(cdns_xspi->srstn);
+
+	cdns_xspi_phy_config(cdns_xspi, cdns_xspi->rd_dly);
+
+	if (cdns_xspi->driver_data->mrvl_hw_overlay) {
+		cdns_mrvl_xspi_setup_clock(cdns_xspi, MRVL_DEFAULT_CLK);
+		cdns_xspi_configure_phy(cdns_xspi);
+	}
+
+	cdns_xspi_print_phy_config(cdns_xspi);
+
+	cdns_xspi->set_interrupts_handler(cdns_xspi, false);
+
+	return spi_controller_resume(cdns_xspi->host);
+}
+
+static DEFINE_SIMPLE_DEV_PM_OPS(cdns_xspi_pm_ops,
+				cdns_xspi_suspend, cdns_xspi_resume);
+
 static const struct of_device_id cdns_xspi_of_match[] = {
 	{
 		.compatible = "cdns,xspi-nor",
@@ -1367,6 +1412,7 @@ static struct platform_driver cdns_xspi_platform_driver = {
 	.driver = {
 		.name = CDNS_XSPI_NAME,
 		.of_match_table = cdns_xspi_of_match,
+		.pm = pm_sleep_ptr(&cdns_xspi_pm_ops),
 	},
 };
 
