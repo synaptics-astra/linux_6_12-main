@@ -378,6 +378,7 @@
 			clocks = <&osc>;
 			bypass-shift = /bits/ 8 <0>;
 			pd-bypass;
+			suspend-resume;
 		};
 
 		vpll1: vpll1@f7422028 {
@@ -387,6 +388,7 @@
 			clocks = <&osc>;
 			bypass-shift = /bits/ 8 <1>;
 			pd-bypass;
+			suspend-resume;
 		};
 
 		apll0: apll0@f7490008 {
