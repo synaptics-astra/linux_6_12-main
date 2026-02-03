@@ -55,6 +55,11 @@
 		method = "smc";
 	};
 
+	smc_reset: smc_reset {
+		compatible = "syna,smc-reset";
+		#reset-cells = <1>;
+	};
+
 	cpus {
 		#address-cells = <1>;
 		#size-cells = <0>;
@@ -545,7 +550,7 @@
 			clock-names = "otg", "core";
 			phys = <&usb_phy0>;
 			phy-names = "usb2-phy";
-			resets = <&chip 0x688 3 1 0>, <&chip 0x688 4 1 0>, <&chip 0x680 9 0 0>;
+			resets = <&smc_reset 3>, <&smc_reset 4>, <&chip 0x680 9 0 0>;
 			reset-names = "dwc2", "dwc2-ecc", "dwc2-sync";
 			dr_mode = "otg";
 			status = "disabled";
@@ -555,7 +560,7 @@
 			compatible = "syna,dolphin-usb2-phy";
 			reg = <0xf7c40000 0x100>;
 			#phy-cells = <0>;
-			resets = <&chip 0x688 2 1 0>;
+			resets = <&smc_reset 2>;
 			reset-names = "phy";
 			status = "disabled";
 		};
@@ -584,7 +589,7 @@
 			compatible = "syna,dolphin-usb3-phy";
 			reg = <0xf7d20100 0x20>;
 			#phy-cells = <0>;
-			resets = <&chip 0x688 0 1 0>;
+			resets = <&smc_reset 0>;
 			reset-names = "phy";
 			status = "disabled";
 		};
@@ -595,7 +600,7 @@
 			reg-names = "dbi", "ctrl", "config";
 			interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>, <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
 			clocks = <&gateclk CLK_PCIE0SYS>;
-			resets = <&chip 0x688 1 1 0>;
+			resets = <&smc_reset 1>;
 			#address-cells = <3>;
 			#size-cells = <2>;
 			#interrupt-cells = <1>;
@@ -614,7 +619,7 @@
 		pcie_phy0: phy@f7e4a02c {
 			compatible = "syna,dolphin-pcie-phy";
 			reg = <0xf7e4a02c 0x1c>;
-			resets = <&chip 0x688 5 1 0>;
+			resets = <&smc_reset 5>;
 			#phy-cells = <0>;
 			status = "disabled";
 		};
