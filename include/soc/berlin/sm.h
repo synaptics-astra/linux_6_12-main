@@ -64,6 +64,9 @@ typedef enum {
     MV_SM_ID_CONSOLE,
     MV_SM_ID_PMIC,
     MV_SM_ID_AUDIO,
+    MV_SM_ID_GPIO,
+    MV_SM_ID_GPIOBTN,
+    MV_SM_ID_ADC,
     MV_SM_ID_MAX,
 } MV_SM_MODULE_ID;
 
