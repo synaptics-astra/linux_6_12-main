@@ -287,6 +287,7 @@
 			clocks = <&osc>;
 			bypass-shift = /bits/ 8 <0>;
 			pd-bypass;
+			suspend-resume;
 		};
 
 		apll1: apll1 {
@@ -296,6 +297,7 @@
 			clocks = <&osc>;
 			bypass-shift = /bits/ 8 <0>;
 			pd-bypass;
+			suspend-resume;
 		};
 
 		gic: interrupt-controller@f7901000 {

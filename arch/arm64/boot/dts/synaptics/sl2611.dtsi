@@ -398,6 +398,7 @@
 			clocks = <&osc>;
 			bypass-shift = /bits/ 8 <0>;
 			pd-bypass;
+			suspend-resume;
 		};
 
 		apll1: apll1@f7490030 {
@@ -407,6 +408,7 @@
 			clocks = <&osc>;
 			bypass-shift = /bits/ 8 <1>;
 			pd-bypass;
+			suspend-resume;
 		};
 
 		smmu: iommu@f7800000 {
