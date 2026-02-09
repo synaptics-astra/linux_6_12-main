@@ -1002,6 +1002,10 @@
 	status = "okay";
 };
 
+&deint {
+	status = "okay";
+};
+
 &pwm0 {
 	pinctrl-0 = <&pwm2_pmux>;
 	pinctrl-names = "default";

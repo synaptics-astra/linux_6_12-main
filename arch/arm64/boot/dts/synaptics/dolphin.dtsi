@@ -517,6 +517,12 @@
 			status = "disabled";
 		};
 
+		deint: deinterlace {
+			compatible = "syna,ovp-deint";
+			reg = <0x0 0x400>;
+			status = "disabled";
+		};
+
 		drm: drm {
 			compatible = "syna,berlin-drm";
 			status = "disabled";
