@@ -2,7 +2,7 @@
 # nvram copied and edited from bcm94384a0wlpagb_p100.txt
 # SSID get/synced with DVT team:
 #********************SUMMARY********************
-#Board Name: syn94384wlpagb_p201
+#Board Name: syn94384wlpagb_p202
 #SSID: 0x0b2b
 #macmid: 0x05cf
 #Successfully made SSID entry in sromdefs.tcl.
@@ -28,7 +28,7 @@ NVRAMRev=$Rev: 884954 $
 # lines of an svn keyword line will cause patching errors in precommit.
 #
 sromrev=11
-boardrev=0x1201
+boardrev=0x1202
 boardtype=0x0b2b
 boardflags=0x00400201
 boardflags2=0x00000000
@@ -135,7 +135,7 @@ rssi_delta_6gb4=32,16,32,15,36,18,34,13,44,22,40,20,28,12,28,10,32,15,30,8,39,17
 rssi_delta_6gb5=34,19,35,17,38,22,38,16,46,26,42,24,31,15,32,13,35,16,33,11,42,22,39,20
 
 tone_to_pkt_rssi_offset=0,0,0,0,0,0,0,0,-2,-2,-4,-4
-slice/1/tone_to_pkt_rssi_offset=-9,-9,-12,-12
+slice/1/tone_to_pkt_rssi_offset=-11,-11,-14,-14
 
 rxgain_tempcoeff2g_sub=0,0,0,0,0
 rxgain_tempcoeff5gl=0
@@ -188,11 +188,11 @@ slice/1/paprrmcsgamma2g_ch13=660,760,830,890,985,-1,-1,-1,-1,-1,-1,-1
 paprrmcsgain2g=128,128,128,128,128,0,0,0,0,0,0,0
 paprrmcsgamma2g=660,760,830,890,985,-1,-1,-1,-1,-1,-1,-1
 
-paprrmcsgamma5g20=670,735,780,860,940,-1,-1,-1,-1,-1,-1,-1
+paprrmcsgamma5g20=670,715,780,860,940,-1,-1,-1,-1,-1,-1,-1
 paprrmcsgain5g20=128,128,128,128,128,0,0,0,0,0,0,0
-paprrmcsgamma5g40=680,735,800,840,1090,-1,-1,-1,-1,-1,-1,-1
+paprrmcsgamma5g40=780,780,800,840,1090,-1,-1,-1,-1,-1,-1,-1
 paprrmcsgain5g40=128,128,128,128,128,0,0,0,0,0,0,0
-paprrmcsgamma5g80=665,735,780,850,1090,-1,-1,-1,-1,-1,-1,-1
+paprrmcsgamma5g80=790,790,790,830,1090,-1,-1,-1,-1,-1,-1,-1
 paprrmcsgain5g80=128,128,128,128,128,0,0,0,0,0,0,0
 paprrmcsgamma5g160=790,790,850,960,1090,-1,-1,-1,-1,-1,-1,-1
 paprrmcsgain5g160=128,128,128,128,128,0,0,0,0,0,0,0
@@ -244,6 +244,9 @@ slice/1/paprrmcsgamma2g_ru106_dynpwr=8848440,7947210,7865280,7865280,7701420,942
 slice/1/paprrmcsgain2g_ru242_dynpwr=0,0,0,0,0,0,0,0,0,0,0,0
 slice/1/paprrmcsgamma2g_ru242_dynpwr=8242158,8160228,8029140,8111070,8029140,9831600,9831600,9831600,9831600,9831600,9831600,9831600
 
+# ocl
+ocl=0
+slice/1/ocl=0
 
 # energy detect threshold
 ed_thresh2g=-63
@@ -290,16 +293,16 @@ tvpm_dc_cltm=100,100,90,90,80,80,70,70,60,60,50,50,40,40,30,30,20,20,1,1
 # OLPC
 disable_olpc=0
 olpc_thresh5g=48
-olpc_anchor5g=56
-olpc_thresh6g=32
-olpc_anchor6g=36
+olpc_anchor5g=50
+olpc_thresh6g=58
+olpc_anchor6g=60
 olpc_thresh2g=64
 olpc_anchor2g=66
 olpc_thresh2g_hi=0x7f7f
-hwolpc_offset_c0=0x00000000,0x00fcfdfc,0x00fcfdfd,0x00fcfefd,0x00fcfefd
-hwolpc_offset_c1=0x00000000,0x00fcfdfc,0x00fdfdfc,0x00fdfdfc,0x00fefdfc
-hwolpc_offset6g_c0=0x0000ffff,0x0000ffff,0x0000ffff,0x0000ffff,0x0000ffff,0x0000ffff
-hwolpc_offset6g_c1=0x0000ffff,0x0000ffff,0x0000ffff,0x0000ffff,0x0000ffff,0x0000ffff
+hwolpc_offset_c0=0,1,2,2,1
+hwolpc_offset_c1=0,1,1,2,1
+hwolpc_offset6g_c0=-2,-4,-2,-2,-2,-4
+hwolpc_offset6g_c1=-4,-4,-4,-5,-4,-5
 
 # PA and tssi related
 extpagain5g=2
@@ -325,13 +328,12 @@ pa2ga0=-231,6037,-951
 pa2ga1=-242,5859,-886
 
 # 5G high power range
-pa5ga0=-238,5242,-748,-218,5378,-753,-211,5317,-744,-191,5456,-738
-pa5ga1=-236,5249,-785,-245,5211,-795,-200,5238,-722,-202,5252,-728
+pa5ga0=-216,5403,-744,-212,5457,-750,-175,5403,-715,-152,5485,-699
+pa5ga1=-230,5285,-778,-242,5141,-769,-198,5179,-718,-194,5153,-712
 
-# 6G high power range
-pa6ga0=-201,5399,-738,-250,5184,-762,-242,5262,-761,-215,5349,-730,-230,5244,-730,-232,5153,-710
-pa6ga1=-219,5362,-784,-232,5344,-793,-245,5216,-791,-257,5136,-800,-231,5170,-761,-222,5187,-749
-
+#### params for 6GHz band
+pa6ga0=-208,5378,-755,-237,5300,-756,-238,5342,-756,-231,5350,-743,-221,5378,-729,-214,5360,-711
+pa6ga1=-230,5311,-784,-245,5302,-797,-266,5057,-776,-263,5006,-768,-210,5240,-724,-178,5157,-636
 
 # Max power and offsets
 powoffs2gtna0=0,0,0,0,0,0,2,3,2,2,0,-1,-2,0
@@ -353,10 +355,10 @@ pdoffset40ma0=0x0000
 pdoffset40ma1=0x0000
 pdoffset80ma0=0x0000
 pdoffset80ma1=0x0000
-pdoffset6g40ma0=0x000000
-pdoffset6g40ma1=0x000000
-pdoffset6g80ma0=0x000000
-pdoffset6g80ma1=0x000000
+pdoffset6g40ma0=0xCF0000
+pdoffset6g40ma1=0xEDDDCF
+pdoffset6g80ma0=0xBBDEEE
+pdoffset6g80ma1=0xCCDDBD
 pdoffset20mRU_c0=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 pdoffset20mRU_c1=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 pdoffset40mRU_c0=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -542,16 +544,16 @@ cck_onecore_tx=1
 rsdb_flip=1
 
 # Base K Values (For the VHT case 5G 160 & 5G80/40/20/2G20)
-proxd_basekival_5g_160=-4065
-proxd_basektval_5g_160=-4065
-proxd_basekival=15152,23302,56243,62850
-proxd_basektval=15152,23302,56243,62850
+proxd_basekival_5g_160=0
+proxd_basektval_5g_160=0
+proxd_basekival=15452,21556,42187,56897
+proxd_basektval=15452,21556,42187,56897
 # Offsets across channels (Upper nibble for target, lower nibble for initiator - saved in hex)
-proxd_160mkval=0x0000,0x0000
-proxd_80mkval=0x0202,0x0202,0x0202,0x0505,0x0000,0x0000
-proxd_40mkval=0x0404,0x0404,0x0303,0x0404,0x0101,0x0505,0x0505,0x0707,0x0101,0x0000,0x0101,0x0303
-proxd_20mkval=0x0303,0x0505,0x0505,0x0404,0x0505,0x0606,0x0606,0x0606,0x0303,0x0505,0x0707,0x0808,0x0505,0x0606,0x0707,0x0505,0x0202,0x0101,0x0202,0x0000,0x0000,0x0505,0x0606,0x0606,0x0303
-proxd_2gkval=0x7,0x3,0x1,0x0,0x1,0x2,0x3,0x4,0x4,0x3,0x2,0x3,0x6,0
+proxd_160mkval=0
+proxd_80mkval=0x0505,0x0101,0x0202,0x0000,0x0000,0x0000
+proxd_40mkval=0x0606,0x0909,0x0000,0x0505,0x0404,0x0505,0x0000,0x0202,0x0202,0x0404,0x0505,0x0505
+proxd_20mkval=0x0e0e,0x1010,0x1111,0x1212,0x0909,0x0b0b,0x0d0d,0x0d0d,0x0909,0x0e0e,0x1010,0x1010,0x0000,0x0909,0x0d0d,0x0606,0x0808,0x0b0b,0x0c0c,0x0c0c,0x0d0d,0x0e0e,0x0e0e,0x0e0e,0x0c0c
+proxd_2gkval=0x7,0x3,0x1,0x0,0x1,0x2,0x4,0x5,0x5,0x4,0x4,0x5,0x9,0
 # Offsets across frame formats @ Initiator
 # Only for non-VHT frame (Leg6, Leg non-6, mcs0, non-mcs0)
 # Delta between the base values are adjusted here
@@ -566,21 +568,39 @@ proxdt_rate40m=0,0,0,0
 proxdt_rate20m=0,0,0,0
 proxdt_rate2g=0,0,0,0
 proxdt_ack=0,0,0,0
-# Offsets for sub-bands (VHT, Leg6, Leg non-6, mcs0, non-mcs0)
+# Offsets for sub-bands (VHT, Leg6, Leg non-6, mcs0, non-mcs0), in ps
 proxd_sub80m40m=0,0,0,0,0
 proxd_sub80m20m=0,0,0,0,0
 proxd_sub40m20m=0,0,0,0,0
-proxd_sub80m40m_ch_off=-2,5030,5735,3499,5236,3
-proxd_sub80m20m_ch_off=17,13710,15505,5595,12456,-17
-proxd_sub40m20m_ch_off=-10,121,2788,2580,4300,3234,-26,536,5267,4499,-49
+proxd_sub80m40m_ch_off=-158,2947,5650,-598,5767,-23,-49759
+proxd_sub80m20m_ch_off=-178,6590,0,7923,10480,-43,-44636
+proxd_sub40m20m_ch_off=163,-455,1068,-2291,9898,1066,3105,0,4356,2247,354,42,-18167,-17875
 proxd_sub160m80m_ch_off=0,0
 proxd_sub160m40m_ch_off=0,0
 proxd_sub160m20m_ch_off=0,0
+# 2G K values for 11AZ
+az_2g_main_adj=61394,57466,55447,53209,51407,51886,53723,54728,55422,54784,54921,55363,61363,83988
+#
 # 5G K values for 11AZ
 az_offset_perbw=0,0,0,0,0
-az_80mkval=11369,11059,9871,8545,8326,8499
-az_40mkval=18397,19218,18578,15516,17898,18055,14076,17516,14587,16515,16927,17078
-az_20mkval=38098,38292,38999,39095,39371,39677,37240,33766,37166,38072,39174,39098,39837,39714,38626,35207,33040,34217,38919,36958,35543,34370,33812,33175,31731
+az_80mkval=8400,10016,8365,10037,7626,9333
+az_40mkval=15156,17677,17920,16986,17139,18219,17130,15761,13106,15692,16790,17059
+az_20mkval=35271,30662,32204,33686,30417,35762,35784,37092,35533,36476,36682,37622,38005,38176,38951,36802,36182,32928,37521,34255,34678,35320,36340,35337,34183
+az_sb_adj_20in80=-867,-867,-867,-867
+az_sb_adj_20in40=280,280
+az_sb_adj_40in80=289,289
+#
+# 6G K values for 11AZ
+az_offset_perbw_6g=0,0,0,0,0
+az_80mkval_6g=9939,8708,7782,8815,8841,6147,5018,7203,7958,8326,8134,7480,10158,10147
+az_40mkval_6g=17632,18658,17635,15164,15829,16810,16266,18808,18330,17378,17094,15077,16807,16286,17061,16809,16823,15112,15192,16419,16316,15861,15085,15116,15857,18126,17098,17587,16922
+az_low_20mkval_6g=34294,36104,34941,32885,28738,27913,29283,28863,28863,27662,26919,29883,31456,32753,35234,34387
+az_mid1_20mkval_6g=31690,31606,31365,29177,28709,27249,23432,28885,35038,33702,29407,32967,35915,30406,31674,34132
+az_mid2_20mkval_6g=36878,36911,36935,38118,35890,35343,36588,36889,34716,34406,34800,35339,32732,32588,38535,39453
+az_high_20mkval_6g=39797,38688,38008,37931,38103,37535,37826,37981,35695,34342,32470
+az_sb_adj_40in80_6g=3140,3140
+az_sb_adj_20in80_6g=5913,5913,5913,5913
+az_sb_adj_20in40_6g=5049,5049
 
 # [31:24] - rts; [23:16] - cts; [15:8] - Tx; [7:0] - Rx;
 fuart_sig2pin_map=0x0b0a0908
@@ -589,15 +609,15 @@ fuart_sig2pin_map=0x0b0a0908
 fdss_level_5g=0,0
 fdss_level_6g=0,0
 fdss_level_2g=0,0
-fdss_profile_2g=6,0,0,7,25,36,49,57,0,128,115,88,88,115,128,128
-fdss_profile_11ax_2g=7,0,90,100,108,148,156,166,220,0,110,100,90,100,110,128,128,128,128
-fdss_profile_5g=6,0,0,7,25,36,49,57,0,128,115,88,88,115,128,128
+fdss_profile_2g=5,0,0,7,18,47,58,0,128,115,94,115,128,128
+fdss_profile_11ax_2g=7,0,80,100,108,148,156,176,220,0,105,90,84,90,105,128,128,110,128
+fdss_profile_5g=5,0,0,7,18,47,58,0,128,115,95,115,128,128
 fdss_profile_5g_bw20_nat=6,0,0,7,25,36,45,57,0,128,128,90,90,128,128,128
-fdss_profile_5g_bw40=7,0,0,40,47,54,74,81,172,0,128,110,95,83,95,110,128,128
-fdss_profile_5g_bw80=8,0,0,10,27,66,86,105,148,215,0,128,128,128,128,128,90,128,128,128,128
-fdss_profile_11ax_5g=7,0,90,100,108,148,156,166,220,0,110,100,90,100,110,128,128,128,128
-fdss_profile_11ax_5g_bw40=5,0,206,226,286,306,500,0,105,87,105,128,128,128,128
-fdss_profile_11ax_5g_bw80=5,0,480,497,527,543,1000,0,110,100,110,128,128,128,128
+fdss_profile_5g_bw40=7,0,0,38,44,50,78,84,90,0,128,115,102,94,102,115,128,128
+fdss_profile_5g_bw80=9,0,0,92,105,110,120,135,145,150,163,0,128,100,90,88,82,88,90,100,128,128,128
+fdss_profile_11ax_5g=7,0,90,100,108,148,156,166,220,0,110,100,90,100,110,128,128,110,128
+fdss_profile_11ax_5g_bw40=7,0,0,152,176,200,312,336,360,0,128,115,102,88,102,115,128,128,128
+fdss_profile_11ax_5g_bw80=9,0,0,400,420,440,480,552,583,603,623,0,128,115,105,95,94,95,105,115,128,128,128
 fdss_profile_5g_bw40_nat=5,0,80,200,250,300,400,0,128,128,128,128,128
 fdss_5g_scale_adjust_nat=128
 fdss_profile_11ax_5g_bw40_nat=5,0,80,200,250,300,400,0,128,110,128,128,128
