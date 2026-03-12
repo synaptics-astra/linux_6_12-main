@@ -207,7 +207,7 @@
 				#address-cells = <1>;
 				#size-cells = <0>;
 				num-cs = <4>;
-				clocks = <&osc>;
+				clocks = <&mcu_clk_100m>;
 				interrupts = <GIC_SPI 134 IRQ_TYPE_LEVEL_HIGH>;
 				dmas = <&pdma1 6>, <&pdma1 16>;
 				dma-names = "rx", "tx";
