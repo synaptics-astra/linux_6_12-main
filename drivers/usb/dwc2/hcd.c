@@ -3112,6 +3112,12 @@ static void dwc2_conn_id_status_change(struct work_struct *work)
 		hsotg->op_state = OTG_STATE_B_PERIPHERAL;
 		dwc2_core_init(hsotg, false);
 		dwc2_enable_global_interrupts(hsotg);
+		/*
+		 * Wait to let dwc2_handle_otg_intr called first
+		 * to avoid to get "dwc2_hsotg_enqueue_setup: failed queue (-11)"
+		 * when switching between usb adb and usb flash drive
+		 */
+		msleep(15);
 		spin_lock_irqsave(&hsotg->lock, flags);
 		dwc2_hsotg_core_init_disconnected(hsotg, false);
 		spin_unlock_irqrestore(&hsotg->lock, flags);
