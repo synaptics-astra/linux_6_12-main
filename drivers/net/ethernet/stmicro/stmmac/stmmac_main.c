@@ -7517,6 +7517,7 @@ int stmmac_dvr_probe(struct device *device,
 {
 	struct net_device *ndev = NULL;
 	struct stmmac_priv *priv;
+	char name[16];
 	u32 rxq;
 	int i, ret = 0;
 
@@ -7793,6 +7794,8 @@ int stmmac_dvr_probe(struct device *device,
 		goto error_phy_setup;
 	}
 
+	snprintf(name, sizeof(name), "eth%d", priv->plat->bus_id);
+	dev_alloc_name(ndev, name);
 	ret = register_netdev(ndev);
 	if (ret) {
 		dev_err(priv->device, "%s: ERROR %i registering the device\n",
