@@ -18,7 +18,7 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 
-			ethernet_phy0: ethernet-phy@2 {
+			ethernet_phy0: ethernet-phy@1 {
 				compatible = "ethernet-phy-id001c.c916";
 				reg = <1>;
 				realtek,clkout-disable;
