@@ -109,7 +109,6 @@
 			regulator-max-microvolt = <5000000>;
 			gpio = <&expander0 5 GPIO_ACTIVE_HIGH>;
 			enable-active-high;
-			regulator-boot-on;
 		};
 
 	};
