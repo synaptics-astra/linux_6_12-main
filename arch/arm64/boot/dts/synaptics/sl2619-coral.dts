@@ -1,0 +1,9 @@
+/dts-v1/;
+
+#include "sl2619.dtsi"
+#include "sl261x-coral-common.dtsi"
+
+/ {
+	model = "Synaptics Coral 2619";
+	compatible = "syna,sl2619-coral", "syna,sl2619";
+};
