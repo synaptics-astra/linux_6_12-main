@@ -224,12 +224,6 @@
 		groups = "SM_GPIO32";
 		function = "pdm";
 	};
-
-	uart1_pmux: uart1-pmux {
-		groups = "SM_GPIO14", "SM_GPIO15", "SM_GPIO16", "SM_GPIO17";
-		function = "uart1";
-		drive-strength = <7>;
-	};
 };
 
 &ipc {
@@ -398,8 +392,6 @@
 
 &uart1 {
 	status = "okay";
-	pinctrl-0 = <&uart1_pmux>;
-	pinctrl-names = "default";
 	/delete-property/ dmas;
 	/delete-property/ dma-names;
 };
