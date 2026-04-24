@@ -599,6 +599,10 @@
 	cs-gpios = <&portb 8 GPIO_ACTIVE_LOW>;
 };
 
+&smmu {
+       status = "okay";
+};
+
 &synpu {
 	status = "okay";
 };
