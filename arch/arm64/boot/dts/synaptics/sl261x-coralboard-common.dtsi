@@ -600,7 +600,7 @@
 };
 
 &smmu {
-       status = "okay";
+	status = "okay";
 };
 
 &synpu {
