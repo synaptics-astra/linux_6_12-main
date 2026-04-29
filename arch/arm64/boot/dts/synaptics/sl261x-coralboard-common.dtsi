@@ -182,7 +182,7 @@
 		drive-strength = <10>;
 	};
 
-	sdhci2_cdn_pmux: sdhci2_cdn-pnux {
+	sdhci2_cdn_pmux: sdhci2_cdn-pmux {
 		groups = "GPIO22";
 		function = "sdio2";
 		drive-strength = <7>;
