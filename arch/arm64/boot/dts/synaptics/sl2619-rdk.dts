@@ -56,6 +56,13 @@
 	};
 };
 
+&sm_pinctrl {
+	eth1_phy_rst_pmux: eth1_phy_rst-pmux {
+		groups = "SM_GPIO35";
+		function = "gpio";
+	};
+};
+
 &mux1 {
 	status = "okay";
 };

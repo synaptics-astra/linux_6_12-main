@@ -186,11 +186,6 @@
 };
 
 &sm_pinctrl {
-	eth1_phy_rst_pmux: eth1_phy_rst-pmux {
-		groups = "SM_GPIO35";
-		function = "gpio";
-	};
-
 	i2c0_pmux: i2c0-pmux {
 		groups = "SM_GPIO12", "SM_GPIO13";
 		function = "tw0";
