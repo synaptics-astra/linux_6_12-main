@@ -49,8 +49,16 @@
 		drive-strength = <7>;
 	};
 
-	eth1_pmux: eth1-pmux {
-		groups = "GPIO48", "GPIO49", "GPIO50", "GPIO51", "GPIO52", "GPIO53", "GPIO54", "GPIO55", "GPIO56", "GPIO57", "GPIO58", "GPIO59";
+	eth1_tx_pmux: eth1_tx-pmux {
+		groups = "GPIO48", "GPIO49", "GPIO50", "GPIO51", "GPIO57", "GPIO58";
+		function = "rgmii2";
+		drive-strength = <10>;
+		input-disable;
+		bias-disable;
+	};
+
+	eth1_rx_pmux: eth1_rx-pmux {
+		groups = "GPIO52", "GPIO53", "GPIO54", "GPIO55", "GPIO56", "GPIO59";
 		function = "rgmii2";
 		drive-strength = <7>;
 	};
@@ -69,7 +77,7 @@
 
 &ethernet1 {
 	status = "okay";
-	pinctrl-0 = <&eth_mdio_pmux>, <&eth1_pmux>;
+	pinctrl-0 = <&eth_mdio_pmux>, <&eth1_tx_pmux>, <&eth1_rx_pmux>;
 	pinctrl-names = "default";
 	phy-handle = <&ethernet_phy1>;
 	phy-mode = "rgmii-id";
