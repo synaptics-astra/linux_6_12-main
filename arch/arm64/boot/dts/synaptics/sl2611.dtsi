@@ -323,6 +323,7 @@
 				clock-names = "ref_clk";
 				resets = <&sm_chip 0x4 0 1 0>, <&sm_chip 0x4 1 1 0>, <&sm_chip 0x4 2 1 0>;
 				reset-names = "arstn", "prstn", "srstn";
+				sdma-io-width = <4>;
 				status = "disabled";
 			};
 
