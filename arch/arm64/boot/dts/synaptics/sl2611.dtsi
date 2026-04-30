@@ -310,7 +310,7 @@
 				};
 			};
 
-			xspi0: xspi@e5050000 {
+			xspi0: spi@e5050000 {
 				compatible = "cdns,xspi-nor";
 				#address-cells = <1>;
 				#size-cells = <0>;
