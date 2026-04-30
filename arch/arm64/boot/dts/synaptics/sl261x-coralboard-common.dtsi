@@ -360,13 +360,9 @@
 	pinctrl-0 = <&sdhci2_pmux>, <&sdhci2_cdn_pmux>;
 	pinctrl-names = "default";
 	bus-width = <4>;
+	no-sdio;
 	no-mmc;
 	disable-wp;
-	cap-sd-highspeed;
-	sd-uhs-sdr12;
-	sd-uhs-sdr25;
-	sd-uhs-sdr50;
-	sd-uhs-sdr104;
 	vmmc-supply = <&vmmc_sdhci2>;
 	vqmmc-supply = <&vqmmc_sdhci2>;
 	mux-states = <&mux0 0 3>;
