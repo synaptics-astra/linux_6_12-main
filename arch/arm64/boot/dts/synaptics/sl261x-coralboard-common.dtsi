@@ -295,6 +295,12 @@
 		function = "gpio";
 	};
 
+	xspi0_pmux: xspi0-pmux {
+		groups = "SM_GPIO18", "SM_GPIO19", "SM_GPIO20", "SM_GPIO21", "SM_GPIO22", "SM_GPIO23";
+		function = "xspi";
+		drive-strength = <7>;
+	};
+
 	uart1_pmux: uart1-pmux {
 		groups = "SM_GPIO31", "SM_GPIO32", "SM_GPIO35", "SM_GPIO36";
 		function = "uart1";
@@ -436,6 +442,20 @@
 	pinctrl-0 = <&uart1_pmux>;
 	/delete-property/ dmas;
 	/delete-property/ dma-names;
+};
+
+&xspi0 {
+	status = "okay";
+	pinctrl-0 = <&xspi0_pmux>;
+	pinctrl-names = "default";
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-tx-bus-width = <4>;
+		spi-rx-bus-width = <4>;
+		status = "okay";
+	};
 };
 
 &axi_meter {
