@@ -70,6 +70,7 @@
 	pinctrl-names = "default";
 	phy-handle = <&ethernet_phy0>;
 	phy-mode = "rgmii-id";
+	snps,no-mac-wol;
 
 	mdio0: mdio {
 		compatible = "snps,dwmac-mdio";
