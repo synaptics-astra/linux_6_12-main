@@ -355,6 +355,11 @@
 		groups = "SM_HDMI_CEC";
 		function = "hdmi";
 	};
+
+	eth_phy_pmux: eth_phy-pmux {
+		groups = "SM_TDI";
+		function = "gpio";
+	};
 };
 
 &avio_pinctrl {
@@ -556,6 +561,8 @@
 &mdio0 {
 	phy0: ethernet-phy@0 {
 		reg = <0>;
+		pinctrl-0 = <&eth_phy_pmux>;
+		pinctrl-names = "default";
 		realtek,clkout-disable;
 		realtek,rxc-ssc-enable;
 		realtek,sysclk-ssc-enable;
