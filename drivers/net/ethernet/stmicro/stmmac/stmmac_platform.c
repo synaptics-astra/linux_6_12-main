@@ -570,6 +570,9 @@ stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
 			plat->flags |= STMMAC_FLAG_TSO_EN;
 	}
 
+	if (of_property_read_bool(np, "snps,no-mac-wol"))
+		plat->flags |= STMMAC_FLAG_USE_PHY_WOL;
+
 	dma_cfg = devm_kzalloc(&pdev->dev, sizeof(*dma_cfg),
 			       GFP_KERNEL);
 	if (!dma_cfg) {
