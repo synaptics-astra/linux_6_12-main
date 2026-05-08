@@ -303,9 +303,13 @@
 		drive-strength = <6>;
 	};
 
+	eth_phy_pmux: eth_phy-pmux {
+		groups = "LCDGPIO4";
+		function = "gpio";
+	};
 
 	sdio_pmux: sdio-pmux {
-		groups = "LCDGPIO3", "LCDGPIO4";
+		groups = "LCDGPIO3";
 		function = "sdio";
 	};
 
