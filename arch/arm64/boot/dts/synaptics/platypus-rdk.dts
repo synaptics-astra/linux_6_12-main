@@ -247,6 +247,11 @@
 		groups = "SM_HDMI_TX_CEC";
 		function = "hdmi";
 	};
+
+	bt_wakeup_pmux: bt_wakeup-pmux {
+		groups = "SM_TDI";
+		function = "gpio";
+	};
 };
 
 &avio_pinctrl {
@@ -999,7 +1004,7 @@
 };
 
 &uart2 {
-	pinctrl-0 = <&uart2_pmux>;
+	pinctrl-0 = <&uart2_pmux>, <&bt_wakeup_pmux>;
 	pinctrl-names = "default";
 	status = "okay";
 };
