@@ -265,11 +265,6 @@
 		function = "gpio";
 	};
 
-	dmic_mute_gpio_pmux: dmic_mute_gpio-pmux {
-		groups = "SM_GPIO37";
-		function = "gpio";
-	};
-
 	csi_gpio1_pmux: csi-gpio1-pmux {
 		groups = "SM_GPIO30";
 		function = "gpio";
@@ -311,6 +306,11 @@
 		groups = "SM_GPIO28", "SM_GPIO29";
 		function = "uart3";
 		drive-strength = <7>;
+	};
+
+	pdm_pmux: pdm-pmux {
+		groups = "SM_GPIO37", "SM_GPIO38";
+		function = "pdm";
 	};
 };
 
@@ -486,17 +486,8 @@
 };
 
 &portf {
-	pinctrl-0 = <&dmic_mute_gpio_pmux>;
-	pinctrl-names = "default";
-
 	gpio-line-names =
 		"", "", "SM_GPIO34", "", "", "", "", "";
-
-	dmic_unmute {
-		gpio-hog;
-		gpios = <5 GPIO_ACTIVE_HIGH>;
-		output-high;
-	};
 };
 
 &avio {
@@ -654,4 +645,31 @@
 &vpp {
 	status = "okay";
 	enable_ampless_boot = <1>;
+};
+
+&dmic {
+	status = "okay";
+	pinctrl-0 = <&pdm_pmux>;
+	pinctrl-names = "default";
+	pdm-type = <1>;
+	pdm-clk-sel = <1>;
+	dmic-mux-reg = <0xe5025800 24>;
+};
+
+&klamath_asoc {
+	status = "okay";
+
+	asoc_dmic: asoc-dmic {
+		status = "okay";
+		stream-name = "dummy-dmic";
+		link-name = "dummy-dmic";
+		cpu-node = <&dmic>;
+		codec-name = "snd-soc-dummy";
+		codec-dai-name = "snd-soc-dummy-dai";
+		platform-node = <&klamath_pcm>;
+	};
+};
+
+&klamath_pcm {
+	status = "okay";
 };
