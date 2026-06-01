@@ -388,7 +388,8 @@ struct cdns_xspi_dev {
 
 	void *in_buffer;
 	const void *out_buffer;
-	u32 sdma_io_width;
+	/* Slave DMA data width in bytes (4 or 8). */
+	u8 dma_data_width;
 
 	u8 hw_num_banks;
 
@@ -593,6 +594,7 @@ static int cdns_xspi_controller_init(struct cdns_xspi_dev *cdns_xspi)
 
 	ctrl_features = readl(cdns_xspi->iobase + CDNS_XSPI_CTRL_FEATURES_REG);
 	cdns_xspi->hw_num_banks = FIELD_GET(CDNS_XSPI_NUM_BANKS, ctrl_features);
+	cdns_xspi->dma_data_width = (ctrl_features & CDNS_XSPI_DMA_DATA_WIDTH) ? 8 : 4;
 	cdns_xspi->set_interrupts_handler(cdns_xspi, false);
 
 	return 0;
@@ -604,10 +606,16 @@ static inline void cdns_xspi_sdma_read(struct cdns_xspi_dev *cdns_xspi, size_t l
 	void *buf = cdns_xspi->in_buffer;
 	size_t offset = 0;
 
-	if (cdns_xspi->sdma_io_width == 4) {
+	if (cdns_xspi->dma_data_width == 4) {
 		if (IS_ALIGNED((uintptr_t)src, 4) && IS_ALIGNED((uintptr_t)buf, 4)) {
 			ioread32_rep(src, buf, len >> 2);
 			offset = len & ~0x3;
+			len -= offset;
+		}
+	} else {
+		if (IS_ALIGNED((uintptr_t)src, 8) && IS_ALIGNED((uintptr_t)buf, 8)) {
+			ioread64_rep(src, buf, len >> 3);
+			offset = len & ~0x7;
 			len -= offset;
 		}
 	}
@@ -620,10 +628,16 @@ static inline void cdns_xspi_sdma_write(struct cdns_xspi_dev *cdns_xspi, size_t 
 	const void *buf = cdns_xspi->out_buffer;
 	size_t offset = 0;
 
-	if (cdns_xspi->sdma_io_width == 4) {
+	if (cdns_xspi->dma_data_width == 4) {
 		if (IS_ALIGNED((uintptr_t)dst, 4) && IS_ALIGNED((uintptr_t)buf, 4)) {
 			iowrite32_rep(dst, buf, len >> 2);
 			offset = len & ~0x3;
+			len -= offset;
+		}
+	} else {
+		if (IS_ALIGNED((uintptr_t)dst, 8) && IS_ALIGNED((uintptr_t)buf, 8)) {
+			iowrite64_rep(dst, buf, len >> 3);
+			offset = len & ~0x7;
 			len -= offset;
 		}
 	}
@@ -1341,10 +1355,6 @@ static int cdns_xspi_probe(struct platform_device *pdev)
 
 	device_property_read_u32(&pdev->dev, "cdns,phy-rd-delay", &rd_dly);
 	dev_info(dev, "xspi phy-rd-delay = %u\n", rd_dly);
-
-	if (device_property_read_u32(&pdev->dev, "sdma-io-width",
-				     &cdns_xspi->sdma_io_width))
-		cdns_xspi->sdma_io_width = 1;
 
 	cdns_xspi->irq = platform_get_irq(pdev, 0);
 	if (cdns_xspi->irq < 0)
