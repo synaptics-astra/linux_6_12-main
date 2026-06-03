@@ -614,7 +614,7 @@ static inline void cdns_xspi_sdma_read(struct cdns_xspi_dev *cdns_xspi, size_t l
 		}
 	} else {
 		if (IS_ALIGNED((uintptr_t)src, 8) && IS_ALIGNED((uintptr_t)buf, 8)) {
-			ioread64_rep(src, buf, len >> 3);
+			readsq(src, buf, len >> 3);
 			offset = len & ~0x7;
 			len -= offset;
 		}
@@ -636,7 +636,7 @@ static inline void cdns_xspi_sdma_write(struct cdns_xspi_dev *cdns_xspi, size_t 
 		}
 	} else {
 		if (IS_ALIGNED((uintptr_t)dst, 8) && IS_ALIGNED((uintptr_t)buf, 8)) {
-			iowrite64_rep(dst, buf, len >> 3);
+			writesq(dst, buf, len >> 3);
 			offset = len & ~0x7;
 			len -= offset;
 		}
