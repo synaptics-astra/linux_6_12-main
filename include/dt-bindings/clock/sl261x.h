@@ -73,3 +73,42 @@
 #define CLK_APBSYSCNT		22
 #define CLK_APBWDT		23
 #define CLK_APBDMA		24
+
+/* sysmgr clks */
+#define CLK_CFG_UART0		0
+#define CLK_SER_UART0		1
+#define CLK_CFG_UART1		2
+#define CLK_CFG_UART2		3
+#define CLK_CFG_UART3		4
+#define CLK_CFG_GPIO		5
+#define CLK_CFG_I2CM0		6
+#define CLK_CFG_I2CM1		7
+#define CLK_CFG_SPIM		8
+#define CLK_CFG_SPIS		9
+#define CLK_CFG_I3C		10
+#define CLK_CFG_XSPI		11
+#define CLK_AXI_XSPI		12
+#define CLK_CFG_PVT		13
+#define CLK_CFG_ADC		14
+#define CLK_CFG_PWM		15
+#define CLK_BUS_CAN0		16
+#define CLK_BUS_CAN1		17
+#define CLK_CFG_PDM		18
+
+#define CLK_SER_UART1		19
+#define CLK_SER_UART2		20
+#define CLK_SER_UART3		21
+#define CLK_DEB_GPIO		22
+#define CLK_SER_I2CM0		23
+#define CLK_SER_I2CM1		24
+#define CLK_SER_SPIM		25
+#define CLK_SER_SPIS		26
+#define CLK_SER_I3C		27
+#define CLK_SER_XSPI		28
+#define CLK_HS_PVT		29
+#define CLK_CORE_ADC		30
+#define CLK_SER_PWM		31
+#define CLK_SER_CAN0		31
+#define CLK_SER_CAN1		33
+#define CLK_SER_PDM		34
+#define CLK_REF_CALIB		35
