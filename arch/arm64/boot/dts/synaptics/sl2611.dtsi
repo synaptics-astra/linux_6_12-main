@@ -107,16 +107,34 @@
 		clock-frequency = <25000000>;
 	};
 
-	mcu_xspiclk: mcu_xspiclk {
+	clk_mcu_pll: clk_mcu_pll {
 		compatible = "fixed-clock";
 		#clock-cells = <0>;
-		clock-frequency = <20000000>;
+		clock-frequency = <400000000>;
 	};
 
-	mcu_clk_100m: mcu_clk_100m {
+	clk_mcu_io_pll: clk_mcu_io_pll{
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <300000000>;
+	};
+
+	clk_mcu_ref: clk_mcu_ref {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <25000000>;
+	};
+
+	clk_mcu_apb: clk_mcu_apb {
 		compatible = "fixed-clock";
 		#clock-cells = <0>;
 		clock-frequency = <100000000>;
+	};
+
+	clk_mcu_axi: clk_mcu_axi {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <200000000>;
 	};
 
 	pmu {
@@ -152,6 +170,12 @@
 				#reset-cells = <4>;
 			};
 
+			sm_clk: clk@e5025600 {
+				compatible = "syna,sl261x-sysmgr-clk";
+				reg = <0xe5025600 0x50>;
+				#clock-cells = <1>;
+			};
+
 			sm_pinctrl: pinctrl@e5025b00 {
 				compatible = "syna,sl261x-system-pinctrl";
 				reg = <0xe5025b00 0x10>, <0xe5025c00 0xa4>;
@@ -161,7 +185,8 @@
 				compatible = "snps,dw-apb-uart";
 				reg = <0xe5030000 0x100>;
 				interrupts = <GIC_SPI 130 IRQ_TYPE_LEVEL_HIGH>;
-				clocks = <&osc>;
+				clocks = <&sm_clk CLK_SER_UART0>, <&sm_clk CLK_CFG_UART0>;
+				clock-names = "baudclk", "apb_pclk";
 				reg-shift = <2>;
 				dmas = <&pdma1 0>, <&pdma1 10>;
 				dma-names = "rx", "tx";
@@ -172,7 +197,8 @@
 				compatible = "snps,dw-apb-uart";
 				reg = <0xe5031000 0x100>;
 				interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
-				clocks = <&mcu_clk_100m>;
+				clocks = <&sm_clk CLK_SER_UART1>, <&sm_clk CLK_CFG_UART1>;
+				clock-names = "baudclk", "apb_pclk";
 				reg-shift = <2>;
 				dmas = <&pdma1 1>, <&pdma1 11>;
 				dma-names = "rx", "tx";
@@ -183,7 +209,8 @@
 				compatible = "snps,dw-apb-uart";
 				reg = <0xe5032000 0x100>;
 				interrupts = <GIC_SPI 132 IRQ_TYPE_LEVEL_HIGH>;
-				clocks = <&mcu_clk_100m>;
+				clocks = <&sm_clk CLK_SER_UART2>, <&sm_clk CLK_CFG_UART2>;
+				clock-names = "baudclk", "apb_pclk";
 				reg-shift = <2>;
 				dmas = <&pdma1 2>, <&pdma1 12>;
 				dma-names = "rx", "tx";
@@ -194,7 +221,8 @@
 				compatible = "snps,dw-apb-uart";
 				reg = <0xe5033000 0x100>;
 				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
-				clocks = <&mcu_clk_100m>;
+				clocks = <&sm_clk CLK_SER_UART3>, <&sm_clk CLK_CFG_UART3>;
+				clock-names = "baudclk", "apb_pclk";
 				reg-shift = <2>;
 				dmas = <&pdma1 3>, <&pdma1 13>;
 				dma-names = "rx", "tx";
@@ -207,7 +235,8 @@
 				#address-cells = <1>;
 				#size-cells = <0>;
 				num-cs = <4>;
-				clocks = <&mcu_clk_100m>;
+				clocks = <&sm_clk CLK_SER_SPIM>, <&sm_clk CLK_CFG_SPIM>;
+				clock-names = "ssi_clk", "pclk";
 				interrupts = <GIC_SPI 134 IRQ_TYPE_LEVEL_HIGH>;
 				dmas = <&pdma1 6>, <&pdma1 16>;
 				dma-names = "rx", "tx";
@@ -219,7 +248,8 @@
 				#address-cells = <1>;
 				#size-cells = <0>;
 				reg = <0xe5035000 0x100>;
-				clocks = <&mcu_clk_100m>;
+				clocks = <&sm_clk CLK_SER_I2CM0>, <&sm_clk CLK_CFG_I2CM0>;
+				clock-names = "ref", "pclk";
 				i2c-sda-falling-time-ns = <510>;
 				i2c-scl-falling-time-ns = <510>;
 				interrupts = <GIC_SPI 135 IRQ_TYPE_LEVEL_HIGH>;
@@ -231,7 +261,8 @@
 				#address-cells = <1>;
 				#size-cells = <0>;
 				reg = <0xe5036000 0x100>;
-				clocks = <&mcu_clk_100m>;
+				clocks = <&sm_clk CLK_SER_I2CM1>, <&sm_clk CLK_CFG_I2CM1>;
+				clock-names = "ref", "pclk";
 				i2c-sda-falling-time-ns = <510>;
 				i2c-scl-falling-time-ns = <510>;
 				interrupts = <GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>;
@@ -246,7 +277,8 @@
 				interrupts = <GIC_SPI 129 IRQ_TYPE_LEVEL_HIGH>;
 				resets = <&sm_chip 0x0 13 1 0>, <&sm_chip 0x0 12 1 0>;
 				reset-names = "core_rst", "apb_rst";
-				clocks = <&osc>;
+				clocks = <&sm_clk CLK_SER_I3C>, <&sm_clk CLK_CFG_I3C>;
+				clock-names = "core", "apb";
 				status = "disabled";
 			};
 
@@ -256,6 +288,8 @@
 				reg = <0xe5038000 0x400>;
 				#address-cells = <1>;
 				#size-cells = <0>;
+				clocks = <&sm_clk CLK_CFG_GPIO>, <&sm_clk CLK_DEB_GPIO>;
+				clock-names = "bus", "db";
 
 				portc: gpio-port@0 {
 					gpio-controller;
@@ -271,6 +305,8 @@
 				reg = <0xe5039000 0x400>;
 				#address-cells = <1>;
 				#size-cells = <0>;
+				clocks = <&sm_clk CLK_CFG_GPIO>, <&sm_clk CLK_DEB_GPIO>;
+				clock-names = "bus", "db";
 
 				portd: gpio-port@0 {
 					gpio-controller;
@@ -286,6 +322,8 @@
 				reg = <0xe503a000 0x400>;
 				#address-cells = <1>;
 				#size-cells = <0>;
+				clocks = <&sm_clk CLK_CFG_GPIO>, <&sm_clk CLK_DEB_GPIO>;
+				clock-names = "bus", "db";
 
 				porte: gpio-port@0 {
 					gpio-controller;
@@ -301,6 +339,8 @@
 				reg = <0xe503b000 0x400>;
 				#address-cells = <1>;
 				#size-cells = <0>;
+				clocks = <&sm_clk CLK_CFG_GPIO>, <&sm_clk CLK_DEB_GPIO>;
+				clock-names = "bus", "db";
 
 				portf: gpio-port@0 {
 					gpio-controller;
@@ -319,8 +359,8 @@
 				      <0xe5052000 0x1000>;
 				reg-names = "io", "sdma", "aux";
 				interrupts = <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>;
-				clocks = <&mcu_xspiclk>;
-				clock-names = "ref_clk";
+				clocks = <&sm_clk CLK_SER_XSPI>, <&sm_clk CLK_CFG_XSPI>, <&sm_clk CLK_AXI_XSPI>;
+				clock-names = "xspiclk", "pclk", "axiclk";
 				resets = <&sm_chip 0x4 0 1 0>, <&sm_chip 0x4 1 1 0>, <&sm_chip 0x4 2 1 0>;
 				reset-names = "arstn", "prstn", "srstn";
 				status = "disabled";
