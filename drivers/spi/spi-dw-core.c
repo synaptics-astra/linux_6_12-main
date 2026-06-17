@@ -220,7 +220,6 @@ static irqreturn_t dw_spi_irq_thread_fn(int irq, void *dev_id)
 {
 	struct spi_controller *host = dev_id;
 	struct dw_spi *dws = spi_controller_get_devdata(host);
-	u16 irq_status = dw_readl(dws, DW_SPI_RISR);
 	u32 rx, tx, imask, mask = 0;
 
 	do {
@@ -240,15 +239,13 @@ static irqreturn_t dw_spi_irq_thread_fn(int irq, void *dev_id)
 		}
 
 		/*
-		 * Send data out if Tx FIFO Empty IRQ is received. The IRQ will be
+		 * Send data out as much as possible. The Tx FIFO Empty IRQ will be
 		 * disabled after the data transmission is finished so not to
 		 * have the TXE IRQ flood at the final stage of the transfer.
 		 */
-		if (irq_status & DW_SPI_INT_TXEI) {
-			tx = dw_writer(dws);
-			if (!dws->tx_len)
-				mask = DW_SPI_INT_TXEI;
-		}
+		tx = dw_writer(dws);
+		if (!dws->tx_len)
+			mask = DW_SPI_INT_TXEI;
 	} while (rx != 0 || tx != 0);
 
 	imask = DW_SPI_INT_TXEI | DW_SPI_INT_TXOI |
