@@ -33,6 +33,11 @@
 		__overlay__ {
 			i2c3: i2c@f7f06000 {
 				clock-frequency = <100000>;
+
+				waveshare: waveshare@45 {
+					status= "disabled";
+				};
+
 				rpi_panel_regulator: rpi_panel_regulator@45 {
 					compatible = "raspberrypi,7inch-touchscreen-panel-regulator";
 					reg = <0x45>;
