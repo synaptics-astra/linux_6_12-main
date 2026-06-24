@@ -5,52 +5,16 @@
 
 /dts-v1/;
 
-#include "sl2619-rdk.dts"
+#include "sl2619-nand-rescue-rdk.dts"
 
-/ {
-	model = "Synaptics SL2619 NAND RDK";
-	compatible = "syna,sl2619-nand-rdk", "syna,sl2619";
+&partition1 {
+	read-only;
 };
 
-&xspi0 {
-	status = "okay";
-	/delete-node/ flash@0;
-
-	flash@0 {
-		compatible = "spi-nand";
-		reg = <0>;
-		status = "okay";
-		#address-cells = <1>;
-		#size-cells = <1>;
-
-		partition@0 {
-			label = "block0";
-			reg = <0x00000000 0x00040000>; /* 256 KiB */
-			read-only;
-		};
-
-		partition@40000 {
-			label = "prebootloader";
-			reg = <0x00040000 0x00400000>; /* 4 MiB */
-			read-only;
-		};
-
-		partition@440000 {
-			label = "cmboot_a";
-			reg = <0x00440000 0x01000000>; /* 16 MiB */
-			read-only;
-		};
-
-		partition@1440000 {
-			label = "cmboot_b";
-			reg = <0x01440000 0x01000000>; /* 16 MiB */
-			read-only;
-		};
-
-		partition@2440000 {
-			label = "rootfs_a";
-			reg = <0x02440000 0xd600000>; /* 214 MiB */
-		};
-	};
+&partition2 {
+	read-only;
 };
 
+&partition3 {
+	read-only;
+};
