@@ -32,6 +32,14 @@
 
 		__overlay__ {
 			i2c3: i2c@f7f06000 {
+				rpi_panel_regulator: rpi_panel_regulator@45 {
+					status = "disabled";
+				};
+
+				ft5406: ts@38 {
+					status = "disabled";
+				};
+
 				waveshare: waveshare@45 {
 					compatible = "waveshare,13.3inch-4lane-panel";
 					reg = <0x45>;
