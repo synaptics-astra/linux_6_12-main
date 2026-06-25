@@ -170,6 +170,12 @@
 			ranges = <0 0 0xffffffff>;
 			dma-ranges = <0xa0000000 0x00000000 0x10000000>;
 
+			hwmon@e5023000 {
+				compatible = "syna,myna2-hwmon";
+				reg = <0xe5023000 0x20>;
+				interrupts = <GIC_SPI 178 IRQ_TYPE_LEVEL_HIGH>;
+			};
+
 			sm_chip: sm_chip-control@e5025400 {
 				compatible = "marvell,berlin4ct-chip-ctrl";
 				reg = <0xe5025400 0x0c>;
