@@ -254,6 +254,7 @@
 };
 
 &gpu {
+	mali-supply = <&vcore>;
 	status = "okay";
 };
 
