@@ -24,6 +24,7 @@
 
 #include <dt-bindings/clock/platypus.h>
 #include <dt-bindings/interrupt-controller/arm-gic.h>
+#include <dt-bindings/thermal/thermal.h>
 
 / {
 	compatible = "syna,platypus";
@@ -73,6 +74,7 @@
 			cpu-idle-states = <&CPU_SLEEP_0>;
 			operating-points-v2 = <&cpu_opp_table>;
 			clocks = <&cpupll 1>;
+			#cooling-cells = <2>;
 			L2_0: l2-cache {
 				compatible = "cache";
 				next-level-cache = <&L3>;
@@ -419,10 +421,11 @@
 			interrupts = <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
 		};
 
-		hwmon@f79200f0 {
+		hwmon: hwmon@f79200f0 {
 			compatible = "syna,myna2-hwmon";
 			reg = <0xf79200f0 0x14>;
 			interrupts = <GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
+			#thermal-sensor-cells = <0>;
 		};
 
 		cpupll: cpupll@f7922000 {
@@ -853,6 +856,7 @@
 				"dvfs_clk3", "clk_high", "clk_low";
 			operating-points-v2 = <&vcore_opp_table>;
 			force-set-voltage;
+			#cooling-cells = <2>;
 			status = "disabled";
 		};
 
@@ -1080,6 +1084,36 @@
 			disp-mode = <0>;
 			disp1-res-id = <24>;
 			disp1-type = <0>;
+		};
+	};
+
+	thermal-zones {
+		cpu_thermal: cpu-thermal {
+			polling-delay-passive = <250>;
+			polling-delay = <1000>;
+
+			thermal-sensors = <&hwmon>;
+
+			trips {
+				cpu_alert: cpu-alert {
+					temperature = <105000>;
+					hysteresis = <2000>;
+					type = "passive";
+				};
+				cpu_crit: cpu-crit {
+					temperature = <110000>;
+					hysteresis = <2000>;
+					type = "critical";
+				};
+			};
+
+			cooling-maps {
+				map0 {
+					trip = <&cpu_alert>;
+					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+							 <&dvfs THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+				};
+			};
 		};
 	};
 };
