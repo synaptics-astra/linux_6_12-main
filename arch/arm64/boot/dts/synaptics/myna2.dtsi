@@ -24,6 +24,7 @@
 
 #include <dt-bindings/clock/myna2.h>
 #include <dt-bindings/interrupt-controller/arm-gic.h>
+#include <dt-bindings/thermal/thermal.h>
 
 / {
 	compatible = "syna,myna2";
@@ -66,6 +67,7 @@
 			cpu-idle-states = <&CPU_SLEEP_0>;
 			clocks = <&cpupll 1>;
 			operating-points-v2 = <&cpu_opp_table>;
+			#cooling-cells = <2>;
 			L2_0: l2-cache {
 				compatible = "cache";
 				next-level-cache = <&L3>;
@@ -311,10 +313,11 @@
 			interrupts = <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
 		};
 
-		hwmon@f79200f0 {
+		hwmon: hwmon@f79200f0 {
 			compatible = "syna,myna2-hwmon";
 			reg = <0xf79200f0 0x20>;
 			interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
+			#thermal-sensor-cells = <0>;
 		};
 
 		cpupll: cpupll@f7922000 {
@@ -730,6 +733,29 @@
 			#reset-cells = <4>;
 		};
 
+		vcore_opp_table: vcore_opp_table {
+			compatible = "operating-points-v2";
+
+			opp@800000000 {
+				opp-hz = /bits/ 64 <800000000>;
+				opp-microvolt = <850000 850000 875000>;
+			};
+
+			opp@1000000000 {
+				opp-hz = /bits/ 64 <1000000000>;
+				opp-microvolt = <900000 900000 900000>;
+			};
+		};
+
+		dvfs: dvfs {
+			compatible = "syna,dvfs";
+			clocks = <&clk CLK_GPU>, <&syspll1 0>, <&syspll0 1>;
+			clock-names = "dvfs_clk0", "clk_high", "clk_low";
+			operating-points-v2 = <&vcore_opp_table>;
+			#cooling-cells = <2>;
+			status = "disabled";
+		};
+
 		adc: adc@f7ea0134 {
 			compatible = "syna,myna2-adc";
 			reg = <0xf7ea0134 0x10>;
@@ -827,6 +853,36 @@
 		lcdc: lcdc {
 			compatible = "syna,lcdc";
 			status = "disabled";
+		};
+	};
+
+	thermal-zones {
+		cpu_thermal: cpu-thermal {
+			polling-delay-passive = <250>;
+			polling-delay = <1000>;
+
+			thermal-sensors = <&hwmon>;
+
+			trips {
+				cpu_alert: cpu-alert {
+					temperature = <105000>;
+					hysteresis = <2000>;
+					type = "passive";
+				};
+				cpu_crit: cpu-crit {
+					temperature = <110000>;
+					hysteresis = <2000>;
+					type = "critical";
+				};
+			};
+
+			cooling-maps {
+				map0 {
+					trip = <&cpu_alert>;
+					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+							 <&dvfs THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+				};
+			};
 		};
 	};
 };

@@ -768,6 +768,10 @@
 	status = "okay";
 };
 
+&dvfs {
+	status = "okay";
+};
+
 &gpio1 {
 	pinctrl-0 = <&audio_mute>;
 	pinctrl-names = "default";
