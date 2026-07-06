@@ -170,6 +170,14 @@
 			ranges = <0 0 0xffffffff>;
 			dma-ranges = <0xa0000000 0x00000000 0x10000000>;
 
+			adc: adc@e5022000 {
+				compatible = "syna,sl261x-adc";
+				reg = <0xe5022000 0x1000>;
+				hwlocks = <&ipc 0>;
+				#io-channel-cells = <1>;
+				status = "disabled";
+			};
+
 			hwmon@e5023000 {
 				compatible = "syna,myna2-hwmon";
 				reg = <0xe5023000 0x20>;
