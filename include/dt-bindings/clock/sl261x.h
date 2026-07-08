@@ -108,7 +108,7 @@
 #define CLK_HS_PVT		29
 #define CLK_CORE_ADC		30
 #define CLK_SER_PWM		31
-#define CLK_SER_CAN0		31
+#define CLK_SER_CAN0		32
 #define CLK_SER_CAN1		33
 #define CLK_SER_PDM		34
 #define CLK_REF_CALIB		35
