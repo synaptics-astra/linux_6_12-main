@@ -11,6 +11,30 @@
 	compatible = "syna,sl2613";
 
 	soc {
+		sm {
+			can0: can@e5060000 {
+				compatible = "arasan,canfd";
+				reg = <0xe5060000 0x1000>;
+				interrupts = <GIC_SPI 163 IRQ_TYPE_LEVEL_HIGH>;
+				clocks = <&sm_clk CLK_SER_CAN0>, <&sm_clk CLK_BUS_CAN0>;
+				clock-names = "can", "sys";
+				resets = <&sm_chip 0x0 3 1 0>, <&sm_chip 0x0 2 1 0>;
+				reset-names = "can", "sys";
+				status = "disabled";
+			};
+
+			can1: can@e5061000 {
+				compatible = "arasan,canfd";
+				reg = <0xe5061000 0x1000>;
+				interrupts = <GIC_SPI 164 IRQ_TYPE_LEVEL_HIGH>;
+				clocks = <&sm_clk CLK_SER_CAN1>, <&sm_clk CLK_BUS_CAN1>;
+				clock-names = "can", "sys";
+				resets = <&sm_chip 0x0 5 1 0>, <&sm_chip 0x0 4 1 0>;
+				reset-names = "can", "sys";
+				status = "disabled";
+			};
+		};
+
 		csi: csi@f7450000 {
 			#address-cells = <1>;
 			#size-cells = <0>;
