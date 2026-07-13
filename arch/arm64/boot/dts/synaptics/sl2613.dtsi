@@ -171,14 +171,29 @@
 			compatible = "syna,npu";
 			reg = <0xf7600000 0x200000>;
 			reg-names = "npu_region";
-			clocks = <&clk CLK_NPU>;
-			clock-names = "core";
+			clocks = <&clk CLK_NPU>, <&syspll1 0>, <&syspll1 1>;
+			clock-names = "core", "clk_high", "clk_low";
 			resets = <&chip 0x378 1 1 0>;
 			reset-names = "core_rst";
 			interrupts = <0 52 IRQ_TYPE_LEVEL_HIGH>, <0 207 IRQ_TYPE_LEVEL_HIGH>;
 			interrupt-names = "job", "fault";
 			iommus = <&smmu 0x1>, <&smmu 0x2>, <&smmu 0x3>, <&smmu 0x4>;
+			operating-points-v2 = <&npu_opp_table>;
 			status = "disabled";
+		};
+
+		npu_opp_table: npu_opp_table {
+			compatible = "operating-points-v2";
+
+			opp@800000000 {
+				opp-hz = /bits/ 64 <800000000>;
+				opp-microvolt = <800000 800000 850000>;
+			};
+
+			opp@1000000000 {
+				opp-hz = /bits/ 64 <1000000000>;
+				opp-microvolt = <850000 850000 850000>;
+			};
 		};
 
 		gpu: gpu@f7980000 {
