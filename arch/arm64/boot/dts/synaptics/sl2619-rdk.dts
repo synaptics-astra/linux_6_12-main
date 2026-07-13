@@ -123,6 +123,7 @@
 };
 
 &synpu {
+	npu-supply = <&vcore>;
 	status = "okay";
 };
 
