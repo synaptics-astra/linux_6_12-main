@@ -34,15 +34,6 @@
  * populate then creates a platform_device that panel-waveshare-dsi-v2
  * can bind to.
  */
-&{/} {
-waveshare_panel: waveshare-panel {
-			 compatible = "waveshare,10.1-dsi-touch-a";
-			 status = "okay";
-			 reset-gpios = <&display_mcu 1 GPIO_ACTIVE_HIGH>;
-			 iovcc-gpios = <&display_mcu 4 GPIO_ACTIVE_HIGH>;
-			 avdd-gpios = <&display_mcu 0 GPIO_ACTIVE_HIGH>;
-		 };
-};
 
 &drm {
 	dsi_panel {
@@ -199,6 +190,14 @@ waveshare_panel: waveshare-panel {
 		     0x05 0x01 0x11 0xFF 0xC0 0xD4 0x01 0x00
 		     0x05 0x01 0x29 0xFF 0x60 0xEA 0x00 0x00>;
 	};
+};
+
+&waveshare_panel {
+	status = "okay";
+	compatible = "waveshare,10.1-dsi-touch-a";
+	reset-gpios = <&display_mcu 1 GPIO_ACTIVE_HIGH>;
+	iovcc-gpios = <&display_mcu 4 GPIO_ACTIVE_HIGH>;
+	avdd-gpios = <&display_mcu 0 GPIO_ACTIVE_HIGH>;
 };
 
 &i2c3 {
