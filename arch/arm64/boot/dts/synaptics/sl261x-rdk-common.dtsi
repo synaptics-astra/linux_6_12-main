@@ -224,6 +224,11 @@
 		groups = "SM_GPIO32";
 		function = "pdm";
 	};
+
+	pwm0_pmux: pwm0-pmux {
+		groups = "SM_GPIO33";
+		function = "pwm";
+	};
 };
 
 &ipc {
@@ -412,6 +417,20 @@
 
 &axi_meter {
 	status = "okay";
+};
+
+&pwm0 {
+	status = "okay";
+	pinctrl-0 = <&pwm0_pmux>;
+	pinctrl-names = "default";
+	syna,clkdiv-id = <5>;
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	channel@5 {
+		reg = <5>;
+		syna,output-select = <2>;
+	};
 };
 
 &i2s1_dai {
