@@ -362,6 +362,18 @@
 				};
 			};
 
+			pwm0: pwm@e5040000 {
+				compatible = "syna,sl261x-spwm";
+				reg = <0xe5040000 0x1000>, <0xe5025850 8>;
+				clocks = <&sm_clk CLK_CFG_PWM>, <&sm_clk CLK_SER_PWM>;
+				clock-names = "cfg", "peri";
+				resets = <&sm_chip 0x0 19 1 0>, <&sm_chip 0x0 18 1 0>;
+				reset-names = "cfg", "peri";
+				hwlocks = <&ipc 2>;
+				#pwm-cells = <3>;
+				status = "disabled";
+			};
+
 			xspi0: spi@e5050000 {
 				compatible = "cdns,xspi-nor";
 				#address-cells = <1>;
