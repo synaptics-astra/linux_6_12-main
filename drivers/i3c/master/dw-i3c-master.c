@@ -885,8 +885,10 @@ static int dw_i3c_master_daa(struct i3c_master_controller *m)
 		      COMMAND_PORT_ROC;
 
 	dw_i3c_master_enqueue_xfer(master, xfer);
-	if (!wait_for_completion_timeout(&xfer->comp, XFER_TIMEOUT))
+	if (!wait_for_completion_timeout(&xfer->comp, XFER_TIMEOUT)) {
 		dw_i3c_master_dequeue_xfer(master, xfer);
+		goto timeout;
+	}
 
 	newdevs = GENMASK(master->maxdevs - cmd->rx_len - 1, 0);
 	newdevs &= ~olddevs;
@@ -896,6 +898,7 @@ static int dw_i3c_master_daa(struct i3c_master_controller *m)
 			i3c_master_add_i3c_dev_locked(m, master->devs[pos].addr);
 	}
 
+timeout:
 	dw_i3c_master_free_xfer(xfer);
 
 rpm_out:
