@@ -248,9 +248,9 @@
 };
 
 &sm_pinctrl {
-	i2c0_pmux: i2c0-pmux {
+	i3c0_pmux: i3c0-pmux {
 		groups = "SM_GPIO12", "SM_GPIO13";
-		function = "tw0";
+		function = "i3c";
 		drive-strength = <7>;
 	};
 
@@ -372,14 +372,10 @@
 	status = "okay";
 };
 
-&i2c0 {
+&i3c0 {
 	status = "okay";
 	pinctrl-names = "default";
-	pinctrl-0 = <&i2c0_pmux>;
-	clock-frequency = <400000>;
-	i2c-sda-hold-time-ns = <300>;
-	i2c-sda-falling-time-ns = <250>;
-	i2c-scl-falling-time-ns = <250>;
+	pinctrl-0 = <&i3c0_pmux>;
 };
 
 &i2c1 {
