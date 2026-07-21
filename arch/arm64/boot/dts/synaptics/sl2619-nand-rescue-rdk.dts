@@ -46,12 +46,12 @@
 
 		partition4: partition@2420000 {
 			label = "rescue";
-			reg = <0x02420000 0x4800000>; /* 72 MiB */
+			reg = <0x02420000 0x037e0000>; /* 55 MiB + 896 KiB */
 		};
 
-		partition5: partition@6c20000 {
+		partition5: partition@5c00000 {
 			label = "rootfs_a";
-			reg = <0x06c20000 0xd8e20000>; /* 142 MiB */
+			reg = <0x05c00000 0xda400000>; /* 164 MiB */
 		};
 	};
 };
