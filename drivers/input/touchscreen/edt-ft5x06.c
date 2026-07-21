@@ -1468,6 +1468,16 @@ static int edt_ft5x06_ts_suspend(struct device *dev)
 	struct gpio_desc *reset_gpio = tsdata->reset_gpio;
 	int ret;
 
+	/*
+	 * Polling method needs to be stopped before suspend
+	 * otehrwise i2c_transfer errors will arise
+	 * and then needs to be restarted after resume
+	 */
+	if (!client->irq) {
+		del_timer_sync(&tsdata->timer);
+		cancel_work_sync(&tsdata->work_i2c_poll);
+	}
+
 	if (device_may_wakeup(dev))
 		return 0;
 
@@ -1509,6 +1519,7 @@ static int edt_ft5x06_ts_resume(struct device *dev)
 	struct i2c_client *client = to_i2c_client(dev);
 	struct edt_ft5x06_ts_data *tsdata = i2c_get_clientdata(client);
 	int ret = 0;
+	unsigned int val;
 
 	if (device_may_wakeup(dev))
 		return 0;
@@ -1550,6 +1561,8 @@ static int edt_ft5x06_ts_resume(struct device *dev)
 		gpiod_set_value_cansleep(reset_gpio, 0);
 		msleep(300);
 
+		regmap_read(tsdata->regmap, 0x00, &val);
+
 		edt_ft5x06_restore_reg_parameters(tsdata);
 		enable_irq(tsdata->client->irq);
 
@@ -1562,6 +1575,9 @@ static int edt_ft5x06_ts_resume(struct device *dev)
 		usleep_range(5000, 6000);
 		gpiod_set_value_cansleep(wake_gpio, 1);
 	}
+
+	if (!client->irq)
+		mod_timer(&tsdata->timer, jiffies + msecs_to_jiffies(FIRST_POLL_DELAY_MS));
 
 	return ret;
 }
