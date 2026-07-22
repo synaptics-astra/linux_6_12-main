@@ -21,6 +21,7 @@
 * DAMAGES OR ANY OTHER DAMAGES, SYNAPTICS' TOTAL CUMULATIVE LIABILITY
 * TO ANY PARTY SHALL NOT EXCEED ONE HUNDRED U.S. DOLLARS.
 */
+#include <dt-bindings/gpio/gpio.h>
 
 /dts-v1/;
 /plugin/;
@@ -42,6 +43,9 @@
 				ft5406: ts@38 {
 					compatible = "edt,edt-ft5506";
 					reg = <0x38>;
+
+					vcc-supply = <&rpi_panel_regulator>;
+					reset-gpios = <&rpi_panel_regulator 1 GPIO_ACTIVE_LOW>;
 
 					touchscreen-size-x = < 800 >;
 					touchscreen-size-y = < 480 >;
