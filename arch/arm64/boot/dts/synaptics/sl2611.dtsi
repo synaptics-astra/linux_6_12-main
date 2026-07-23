@@ -181,6 +181,7 @@
 			hwmon@e5023000 {
 				compatible = "syna,myna2-hwmon";
 				reg = <0xe5023000 0x20>;
+				hwlocks = <&ipc 1>;
 				interrupts = <GIC_SPI 178 IRQ_TYPE_LEVEL_HIGH>;
 			};
 
