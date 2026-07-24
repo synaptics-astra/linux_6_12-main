@@ -221,6 +221,7 @@ static irqreturn_t dw_spi_irq_thread_fn(int irq, void *dev_id)
 	struct spi_controller *host = dev_id;
 	struct dw_spi *dws = spi_controller_get_devdata(host);
 	u32 rx, tx, imask, mask = 0;
+	bool finalize = false;
 
 	do {
 		/*
@@ -232,8 +233,8 @@ static irqreturn_t dw_spi_irq_thread_fn(int irq, void *dev_id)
 		 */
 		rx = dw_reader(dws);
 		if (!dws->rx_len) {
-			mask = DW_SPI_INT_MASK;
-			spi_finalize_current_transfer(dws->host);
+			mask |= DW_SPI_INT_MASK;
+			finalize = true;
 		} else if (dws->rx_len <= dw_readl(dws, DW_SPI_RXFTLR)) {
 			dw_writel(dws, DW_SPI_RXFTLR, dws->rx_len - 1);
 		}
@@ -245,13 +246,16 @@ static irqreturn_t dw_spi_irq_thread_fn(int irq, void *dev_id)
 		 */
 		tx = dw_writer(dws);
 		if (!dws->tx_len)
-			mask = DW_SPI_INT_TXEI;
+			mask |= DW_SPI_INT_TXEI;
 	} while (rx != 0 || tx != 0);
 
 	imask = DW_SPI_INT_TXEI | DW_SPI_INT_TXOI |
 		DW_SPI_INT_RXUI | DW_SPI_INT_RXOI | DW_SPI_INT_RXFI;
 	imask &= ~mask;
 	dw_spi_umask_intr(dws, imask);
+
+	if (finalize)
+		spi_finalize_current_transfer(dws->host);
 
 	return IRQ_HANDLED;
 }
