@@ -876,6 +876,7 @@ static int dw_i3c_master_daa(struct i3c_master_controller *m)
 		goto rpm_out;
 	}
 	cmd = &xfer->cmds[0];
+	cmd->rx_len = master->maxdevs;
 	cmd->cmd_hi = COMMAND_PORT_TRANSFER_ARG;
 	cmd->cmd_lo = COMMAND_PORT_DEV_COUNT(master->maxdevs - pos) |
 		      COMMAND_PORT_DEV_INDEX(pos) |
@@ -885,12 +886,13 @@ static int dw_i3c_master_daa(struct i3c_master_controller *m)
 		      COMMAND_PORT_ROC;
 
 	dw_i3c_master_enqueue_xfer(master, xfer);
-	if (!wait_for_completion_timeout(&xfer->comp, XFER_TIMEOUT)) {
+	if (!wait_for_completion_timeout(&xfer->comp, XFER_TIMEOUT))
 		dw_i3c_master_dequeue_xfer(master, xfer);
-		goto timeout;
-	}
 
-	newdevs = GENMASK(master->maxdevs - cmd->rx_len - 1, 0);
+	if (cmd->rx_len >= master->maxdevs)
+		newdevs = 0;
+	else
+		newdevs = GENMASK(master->maxdevs - cmd->rx_len - 1, 0);
 	newdevs &= ~olddevs;
 
 	for (pos = 0; pos < master->maxdevs; pos++) {
@@ -898,7 +900,6 @@ static int dw_i3c_master_daa(struct i3c_master_controller *m)
 			i3c_master_add_i3c_dev_locked(m, master->devs[pos].addr);
 	}
 
-timeout:
 	dw_i3c_master_free_xfer(xfer);
 
 rpm_out:
