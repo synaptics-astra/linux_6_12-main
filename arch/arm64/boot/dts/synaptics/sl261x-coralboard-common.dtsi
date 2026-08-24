@@ -245,6 +245,16 @@
 		groups = "GPIO50";
 		function = "gpio";
 	};
+
+	i2s2_pmux: i2s2-pmux {
+		groups = "GPIO5", "GPIO6", "GPIO7", "GPIO8", "GPIO11";
+		function = "i2s2";
+	};
+
+	i2s3_pmux: i2s3-pmux {
+		groups = "GPIO12", "GPIO13", "GPIO14", "GPIO15";
+		function = "i2s3";
+	};
 };
 
 &sm_pinctrl {
@@ -661,6 +671,23 @@
 	enable_ampless_boot = <1>;
 };
 
+&i2s2_dai {
+	status = "okay";
+	pinctrl-0 = <&i2s2_pmux>;
+	pinctrl-names = "default";
+	clk_src = "APLL";
+	clk_feed = "I2S3_DI";
+	output-mclk;
+};
+
+&i2s3_dai {
+	status = "okay";
+	pinctrl-0 = <&i2s3_pmux>;
+	pinctrl-names = "default";
+	clk_src = "APLL";
+	clk_feed = "I2S3_DI";
+};
+
 &dmic {
 	status = "okay";
 	pinctrl-0 = <&pdm_pmux>;
@@ -670,8 +697,36 @@
 	dmic-mux-reg = <0xe5025800 24>;
 };
 
+&klamath_pcm {
+	status = "okay";
+};
+
 &klamath_asoc {
 	status = "okay";
+
+	asoc_i2s2: asoc-i2s2 {
+		status = "okay";
+		stream-name = "asoc-i2s2";
+		link-name = "asoc-i2s2";
+		format = "i2s";
+		cpu-node = <&i2s2_dai>;
+		codec-name = "snd-soc-dummy";
+		codec-dai-name = "snd-soc-dummy-dai";
+		platform-node = <&klamath_pcm>;
+	};
+
+	asoc_i2s3: asoc-i2s3 {
+		status = "okay";
+		stream-name = "asoc-i2s3";
+		link-name = "asoc-i2s3";
+		format = "i2s";
+		bitclock-master;
+		frame-master;
+		cpu-node = <&i2s3_dai>;
+		codec-name = "snd-soc-dummy";
+		codec-dai-name = "snd-soc-dummy-dai";
+		platform-node = <&klamath_pcm>;
+	};
 
 	asoc_dmic: asoc-dmic {
 		status = "okay";
@@ -682,8 +737,4 @@
 		codec-dai-name = "snd-soc-dummy-dai";
 		platform-node = <&klamath_pcm>;
 	};
-};
-
-&klamath_pcm {
-	status = "okay";
 };
