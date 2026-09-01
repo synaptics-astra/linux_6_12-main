@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0
 //
-// MP8867/MP8869 regulator driver
+// MP8864/MP8867/MP8869 regulator driver
 //
 // Copyright (C) 2020 Synaptics Incorporated
 //
@@ -295,6 +295,23 @@ static const struct regmap_config mp8869_regmap_config = {
 	.cache_type = REGCACHE_FLAT,
 };
 
+static const struct mp886x_cfg_info mp8864_ci = {
+	.rops = &mp8867_regulator_ops,
+	.slew_rates = {
+		64000,
+		32000,
+		16000,
+		8000,
+		4000,
+		2000,
+		1000,
+		500,
+	},
+	.switch_freq = { 600000, 850000, 1100000, 1600000 },
+	.fs_reg = MP886X_SYSCNTLREG1,
+	.fs_shift = 1,
+};
+
 static const struct mp886x_cfg_info mp8867_ci = {
 	.rops = &mp8867_regulator_ops,
 	.slew_rates = {
@@ -397,6 +414,7 @@ static int mp886x_i2c_probe(struct i2c_client *client)
 }
 
 static const struct of_device_id mp886x_dt_ids[] = {
+	{ .compatible = "mps,mp8864", .data = &mp8864_ci },
 	{ .compatible = "mps,mp8867", .data = &mp8867_ci },
 	{ .compatible = "mps,mp8869", .data = &mp8869_ci },
 	{ }
@@ -404,6 +422,7 @@ static const struct of_device_id mp886x_dt_ids[] = {
 MODULE_DEVICE_TABLE(of, mp886x_dt_ids);
 
 static const struct i2c_device_id mp886x_id[] = {
+	{ "mp8864", (kernel_ulong_t)&mp8864_ci },
 	{ "mp8867", (kernel_ulong_t)&mp8867_ci },
 	{ "mp8869", (kernel_ulong_t)&mp8869_ci },
 	{ },
