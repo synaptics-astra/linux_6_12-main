@@ -316,6 +316,7 @@ static const struct mp886x_cfg_info mp8864_ci = {
 	.switch_freq = { 600000, 850000, 1100000, 1600000 },
 	.fs_reg = MP886X_SYSCNTLREG1,
 	.fs_shift = 1,
+	.config = &mp8867_regmap_config,
 };
 
 static const struct mp886x_cfg_info mp8867_ci = {
