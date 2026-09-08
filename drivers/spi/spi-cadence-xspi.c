@@ -175,8 +175,8 @@
 	FIELD_PREP(MODE_NO_OF_BYTES, modebytes) | \
 	FIELD_PREP(CDNS_XSPI_CMD_P1_R3_NUM_ADDR_BYTES, (op)->addr.nbytes))
 
-#define CDNS_XSPI_CMD_FLD_P1_INSTR_CMD_4(op, chipsel) ( \
-	FIELD_PREP(CDNS_XSPI_CMD_P1_R4_ADDR_IOS, ilog2((op)->addr.buswidth)) | \
+#define CDNS_XSPI_CMD_FLD_P1_INSTR_CMD_4(op, chipsel, addr_buswidth) ( \
+	FIELD_PREP(CDNS_XSPI_CMD_P1_R4_ADDR_IOS, ilog2(addr_buswidth)) | \
 	FIELD_PREP(CDNS_XSPI_CMD_P1_R4_CMD_IOS, ilog2((op)->cmd.buswidth)) | \
 	FIELD_PREP(CDNS_XSPI_CMD_P1_R4_BANK, chipsel))
 
@@ -744,6 +744,16 @@ static int cdns_xspi_send_stig_command(struct cdns_xspi_dev *cdns_xspi,
 	u32 cmd_status;
 	int ret;
 	int dummybytes = op->dummy.nbytes;
+	u8 addr_buswidth = op->addr.buswidth;
+
+	/*
+	 * The first dummy byte is sent as a mode byte by profile 1. A
+	 * command without an address can have a zero address buswidth. Use
+	 * the dummy width for the mode byte, or the command width if absent.
+	 */
+	if (!op->addr.nbytes)
+		addr_buswidth = op->dummy.nbytes ? op->dummy.buswidth :
+			op->cmd.buswidth;
 
 	ret = cdns_xspi_wait_for_controller_idle(cdns_xspi);
 	if (ret < 0)
@@ -765,7 +775,8 @@ static int cdns_xspi_send_stig_command(struct cdns_xspi_dev *cdns_xspi,
 		cmd_regs[3] = CDNS_XSPI_CMD_FLD_P1_INSTR_CMD_3(op, 0);
 	}
 	cmd_regs[4] = CDNS_XSPI_CMD_FLD_P1_INSTR_CMD_4(op,
-						       cdns_xspi->cur_cs);
+						       cdns_xspi->cur_cs,
+						       addr_buswidth);
 
 	cdns_xspi_trigger_command(cdns_xspi, cmd_regs);
 
