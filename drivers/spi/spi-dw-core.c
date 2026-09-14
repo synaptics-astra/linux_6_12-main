@@ -247,6 +247,7 @@ static irqreturn_t dw_spi_irq_thread_fn(int irq, void *dev_id)
 		tx = dw_writer(dws);
 		if (!dws->tx_len)
 			mask |= DW_SPI_INT_TXEI;
+		cond_resched();
 	} while (rx != 0 || tx != 0);
 
 	imask = DW_SPI_INT_TXEI | DW_SPI_INT_TXOI |
@@ -260,16 +261,52 @@ static irqreturn_t dw_spi_irq_thread_fn(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+static inline bool dw_spi_can_thread_irq(struct spi_device *spi)
+{
+	return !!spi_get_csgpiod(spi, 0);
+}
+
 static irqreturn_t dw_spi_transfer_handler(struct dw_spi *dws)
 {
+	u16 irq_status = dw_readl(dws, DW_SPI_ISR);
+
 	if (dw_spi_check_status(dws, false)) {
 		spi_finalize_current_transfer(dws->host);
 		return IRQ_HANDLED;
 	}
 
-	dw_spi_mask_intr(dws, DW_SPI_INT_MASK);
+	/*
+	 * Read data from the Rx FIFO every time we've got a chance executing
+	 * this method. If there is nothing left to receive, terminate the
+	 * procedure. Otherwise adjust the Rx FIFO Threshold level if it's a
+	 * final stage of the transfer. By doing so we'll get the next IRQ
+	 * right when the leftover incoming data is received.
+	 */
+	dw_reader(dws);
+	if (!dws->rx_len) {
+		dw_spi_mask_intr(dws, 0xff);
+		spi_finalize_current_transfer(dws->host);
+	} else if (dws->rx_len <= dw_readl(dws, DW_SPI_RXFTLR)) {
+		dw_writel(dws, DW_SPI_RXFTLR, dws->rx_len - 1);
+	}
 
-	return IRQ_WAKE_THREAD;
+	/*
+	 * Send data out if Tx FIFO Empty IRQ is received. The IRQ will be
+	 * disabled after the data transmission is finished so not to
+	 * have the TXE IRQ flood at the final stage of the transfer.
+	 */
+	if (irq_status & DW_SPI_INT_TXEI) {
+		dw_writer(dws);
+		if (!dws->tx_len)
+			dw_spi_mask_intr(dws, DW_SPI_INT_TXEI);
+	}
+
+	if (!dws->rx_len || !dws->tx_len || !dw_spi_can_thread_irq(dws->host->cur_msg->spi)) {
+		return IRQ_HANDLED;
+	} else {
+		dw_spi_mask_intr(dws, DW_SPI_INT_MASK);
+		return IRQ_WAKE_THREAD;
+	}
 }
 
 static irqreturn_t dw_spi_irq(int irq, void *dev_id)
