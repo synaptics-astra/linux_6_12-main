@@ -398,13 +398,28 @@ out_reset:
 static int dw_spi_mmio_suspend(struct device *dev)
 {
 	struct dw_spi_mmio *dwsmmio = dev_get_drvdata(dev);
+	int ret;
 
-	return dw_spi_suspend_host(&dwsmmio->dws);
+	ret = dw_spi_suspend_host(&dwsmmio->dws);
+	if (ret)
+		return ret;
+
+	reset_control_assert(dwsmmio->rstc);
+
+	clk_disable_unprepare(dwsmmio->pclk);
+	clk_disable_unprepare(dwsmmio->clk);
+
+	return 0;
 }
 
 static int dw_spi_mmio_resume(struct device *dev)
 {
 	struct dw_spi_mmio *dwsmmio = dev_get_drvdata(dev);
+
+	clk_prepare_enable(dwsmmio->clk);
+	clk_prepare_enable(dwsmmio->pclk);
+
+	reset_control_deassert(dwsmmio->rstc);
 
 	return dw_spi_resume_host(&dwsmmio->dws);
 }
