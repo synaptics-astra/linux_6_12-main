@@ -7,6 +7,7 @@
 
 #include <dt-bindings/clock/sl261x.h>
 #include <dt-bindings/interrupt-controller/arm-gic.h>
+#include <dt-bindings/thermal/thermal.h>
 
 / {
 	compatible = "syna,sl2611";
@@ -60,6 +61,7 @@
 			cpu-idle-states = <&CPU_SLEEP_0>;
 			operating-points-v2 = <&cpu_opp_table>;
 			clocks = <&cpupll 1>;
+			#cooling-cells = <2>;
 			L2_0: l2-cache {
 				compatible = "cache";
 				next-level-cache = <&L3>;
@@ -178,11 +180,12 @@
 				status = "disabled";
 			};
 
-			hwmon@e5023000 {
+			hwmon: hwmon@e5023000 {
 				compatible = "syna,myna2-hwmon";
 				reg = <0xe5023000 0x20>;
 				hwlocks = <&ipc 1>;
 				interrupts = <GIC_SPI 178 IRQ_TYPE_LEVEL_HIGH>;
+				#thermal-sensor-cells = <0>;
 			};
 
 			sm_chip: sm_chip-control@e5025400 {
@@ -1087,6 +1090,35 @@
 					  "ch16", "ch17", "ch18", "ch19",
 					  "combined";
 			status = "disabled";
+		};
+	};
+
+	thermal-zones {
+		cpu_thermal: cpu-thermal {
+			polling-delay-passive = <250>;
+			polling-delay = <1000>;
+
+			thermal-sensors = <&hwmon>;
+
+			trips {
+				cpu_alert: cpu-alert {
+					temperature = <105000>;
+					hysteresis = <2000>;
+					type = "passive";
+				};
+				cpu_crit: cpu-crit {
+					temperature = <110000>;
+					hysteresis = <2000>;
+					type = "critical";
+				};
+			};
+
+			cooling-maps {
+				map0 {
+					trip = <&cpu_alert>;
+					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+				};
+			};
 		};
 	};
 };
